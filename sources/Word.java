@@ -8,7 +8,7 @@ package project.sources;
  *
  * @author WINDOWS 10
  */
-public class Word {
+public class Word implements Comparable<Word> {
     private String name;
     private String definition;
     
@@ -31,5 +31,10 @@ public class Word {
     
     public void setDefinition(String definition) {
         this.definition = definition;
+    } 
+    
+    @Override
+    public int compareTo(Word b) {
+        return this.name.compareTo(b.name);
     }
 }
