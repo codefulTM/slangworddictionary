@@ -11,7 +11,7 @@ import java.io.*;
  */
 public class Dictionary {
     private HashMap<String, ArrayList<String>> slanglist = null;
-    private ArrayList<String> history = null;
+    private HashSet<String> history = null;
     
     Dictionary() {
         try {
@@ -42,13 +42,12 @@ public class Dictionary {
                 oos.flush();
                 oos.close();
             }
-            
             if(f2.exists()) {
                 ois = new ObjectInputStream(new FileInputStream(f2));
-                this.history = (ArrayList<String>)ois.readObject();
+                this.history = (HashSet<String>)ois.readObject();
             }
             else {
-                this.history = new ArrayList<>();
+                this.history = new HashSet<>();
             }
         }
         catch(Exception e) {
@@ -64,6 +63,9 @@ public class Dictionary {
         if(deflist == null) {
             return null; // the slang is not found
         }
+        // add to history
+        this.history.add(name);
+        // generate word list
         ArrayList<Word> foundlist = new ArrayList<>();
         for(int i = 0; i < deflist.size(); i++) {
             foundlist.add(new Word(name, deflist.get(i)));
@@ -76,7 +78,7 @@ public class Dictionary {
             return null;
         }
         ArrayList<String> namelist = new ArrayList<>();
-        for(HashMap.Entry<String, ArrayList<String>> e: this.slanglist.entrySet()) {
+        for(var e: this.slanglist.entrySet()) {
             ArrayList<String> defSet = e.getValue();
             for(int i = 0; i < defSet.size(); i++) {
                 if(defSet.get(i).contains(definition)) {
@@ -87,12 +89,13 @@ public class Dictionary {
         }
         ArrayList<Word> foundlist = new ArrayList<>();
         for(int i = 0; i < namelist.size(); i++) {
+            this.history.add(namelist.get(i));
             foundlist.addAll(this.findByName(namelist.get(i)));
         }
         return foundlist;
     }
     
-    public ArrayList<String> getHistory() {
+    public HashSet<String> getHistory() {
         return this.history;
     }
     
@@ -121,6 +124,7 @@ public class Dictionary {
     boolean removeByName(String name) {
         if(this.slanglist.containsKey(name)) {
             this.slanglist.remove(name);
+            this.history.remove(name);
             return true;
         }
         return false;
@@ -147,6 +151,7 @@ public class Dictionary {
     
     void resetDictionary() {
         try {
+            // regenerate the slang list from slang.txt and write back to the binary file
             BufferedReader br = new BufferedReader(new FileReader("../data/slang.txt"));
             String line;
             String name;
@@ -160,6 +165,13 @@ public class Dictionary {
             br.close();
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("../data/slanglist.bin"));
             oos.writeObject(this.slanglist);
+            oos.flush();
+            oos.close();
+            
+            // clear the history and write back to the binary file
+            this.history = new HashSet<>();
+            oos = new ObjectOutputStream(new FileOutputStream("../data/history.bin"));
+            oos.writeObject(this.history);
             oos.flush();
             oos.close();
         }
