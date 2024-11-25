@@ -71,7 +71,23 @@ public class Dictionary {
     }
     
     public ArrayList<Word> findByDefinition(String definition) {
-        ArrayList<Word> foundlist = new ArrayList<Word>();
+        if(this.slanglist == null) {
+            return null;
+        }
+        ArrayList<String> namelist = new ArrayList<>();
+        for(HashMap.Entry<String, ArrayList<String>> e: this.slanglist.entrySet()) {
+            ArrayList<String> defSet = e.getValue();
+            for(int i = 0; i < defSet.size(); i++) {
+                if(defSet.get(i).contains(definition)) {
+                    namelist.add(e.getKey());
+                    break;
+                }
+            }
+        }
+        ArrayList<Word> foundlist = new ArrayList<>();
+        for(int i = 0; i < namelist.size(); i++) {
+            foundlist.addAll(this.findByName(namelist.get(i)));
+        }
         return foundlist;
     }
     
