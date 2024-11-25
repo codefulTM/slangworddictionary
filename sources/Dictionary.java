@@ -10,8 +10,8 @@ import java.io.*;
  * @author WINDOWS 10
  */
 public class Dictionary {
-    private HashMap<String, ArrayList<String>> slanglist;
-    private HashMap<String, ArrayList<String>> history;
+    private HashMap<String, ArrayList<String>> slanglist = null;
+    private HashMap<String, ArrayList<String>> history = null;
     
     Dictionary() {
         try {
@@ -56,7 +56,17 @@ public class Dictionary {
     }
     
     public ArrayList<Word> findByName(String name) {
-        ArrayList<Word> foundlist = new ArrayList<Word>();
+        if(this.slanglist == null) {
+            return null;
+        }
+        ArrayList<String> deflist = this.slanglist.get(name);
+        if(deflist == null) {
+            return null; // the slang is not found
+        }
+        ArrayList<Word> foundlist = new ArrayList<>();
+        for(int i = 0; i < deflist.size(); i++) {
+            foundlist.add(new Word(name, deflist.get(i)));
+        }
         return foundlist;
     }
     
