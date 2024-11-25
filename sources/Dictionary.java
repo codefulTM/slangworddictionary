@@ -36,6 +36,7 @@ public class Dictionary {
                     defs = (ArrayList<String>)Arrays.asList(Arrays.copyOfRange(substrs, 1, substrs.length));
                     this.slanglist.put(name, defs);
                 }
+                br.close();
                 oos = new ObjectOutputStream(new FileOutputStream(f1));
                 oos.writeObject(this.slanglist);
                 oos.flush();
@@ -127,7 +128,6 @@ public class Dictionary {
     
     ArrayList<Word> getRandomSlang() {
         ArrayList<Word> list = null;
-        // dem so key trong slang list -> n
         int n = this.slanglist.size();
         int i = (int)Math.floor(Math.random() * n);
         int cnt = 0;
@@ -145,23 +145,42 @@ public class Dictionary {
         return list;
     }
     
-    boolean resetDictionary(String filename) {
-        return true;
+    void resetDictionary() {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("../data/slang.txt"));
+            String line;
+            String name;
+            ArrayList<String> defs;
+            while((line = br.readLine()) != null) {
+                String[] substrs = line.split("[`|]");
+                name = substrs[0];
+                defs = (ArrayList<String>)Arrays.asList(Arrays.copyOfRange(substrs, 1, substrs.length));
+                this.slanglist.put(name, defs);
+            }
+            br.close();
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("../data/slanglist.bin"));
+            oos.writeObject(this.slanglist);
+            oos.flush();
+            oos.close();
+        }
+        catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
     
-    boolean saveProgress(String filename) {
-        return true;
-    }
-    
-    boolean addSlangWord(Word w) {
-        return true;
-    }
-    
-    void overwriteSlangWord(Word w) {
-        
-    }
-    
-    void addDuplicateSlangWord(Word w) {
-        
+    void saveProgress() {
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("../data/slanglist.bin"));
+            oos.writeObject(this.slanglist);
+            oos.flush();
+            oos.close();
+            oos = new ObjectOutputStream(new FileOutputStream("../data/history.bin"));
+            oos.writeObject(this.history);
+            oos.flush();
+            oos.close();
+        }
+        catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
