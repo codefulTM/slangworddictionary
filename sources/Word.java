@@ -8,7 +8,9 @@ package project.sources;
  *
  * @author WINDOWS 10
  */
-public class Word implements Comparable<Word> {
+import java.io.*;
+        
+public class Word implements Serializable {
     private String name;
     private String definition;
     
@@ -32,9 +34,4 @@ public class Word implements Comparable<Word> {
     public void setDefinition(String definition) {
         this.definition = definition;
     } 
-    
-    @Override
-    public int compareTo(Word b) {
-        return this.name.compareTo(b.name);
-    }
 }

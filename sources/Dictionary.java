@@ -11,7 +11,7 @@ import java.io.*;
  */
 public class Dictionary {
     private HashMap<String, ArrayList<String>> slanglist = null;
-    private HashMap<String, ArrayList<String>> history = null;
+    private ArrayList<String> history = null;
     
     Dictionary() {
         try {
@@ -44,10 +44,10 @@ public class Dictionary {
             
             if(f2.exists()) {
                 ois = new ObjectInputStream(new FileInputStream(f2));
-                this.history = (HashMap<String, ArrayList<String>>)ois.readObject();
+                this.history = (ArrayList<Word>)ois.readObject();
             }
             else {
-                this.history = new HashMap<String, ArrayList<String>>();
+                this.history = new ArrayList<>();
             }
         }
         catch(Exception e) {
@@ -91,13 +91,20 @@ public class Dictionary {
         return foundlist;
     }
     
-    public ArrayList<Word> getHistory() {
-        ArrayList<Word> historyList = new ArrayList<Word>();
-        return historyList;
+    public ArrayList<String> getHistory() {
+        return this.history;
     }
     
     boolean addSlangWord(String name, String definition) {
-        return true;
+        if(this.slanglist.containsKey(name)) {
+            return false;
+        }
+        else {
+            ArrayList<String> deflist = new ArrayList<>();
+            deflist.add(definition);
+            this.slanglist.put(name, deflist);
+            return true;
+        }
     }
     
     void overwriteSlangWord(String name, String definition) {
