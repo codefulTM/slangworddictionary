@@ -44,7 +44,7 @@ public class Dictionary {
             
             if(f2.exists()) {
                 ois = new ObjectInputStream(new FileInputStream(f2));
-                this.history = (ArrayList<Word>)ois.readObject();
+                this.history = (ArrayList<String>)ois.readObject();
             }
             else {
                 this.history = new ArrayList<>();
@@ -108,15 +108,21 @@ public class Dictionary {
     }
     
     void overwriteSlangWord(String name, String definition) {
-        
+        ArrayList<String> deflist = new ArrayList<>();
+        deflist.add(definition);
+        this.slanglist.put(name, deflist);
     }
     
     void addDuplicateSlangWord(String name, String definition) {
-        
+        this.slanglist.get(name).add(definition);
     }
     
     boolean removeByName(String name) {
-        return true;
+        if(this.slanglist.containsKey(name)) {
+            this.slanglist.remove(name);
+            return true;
+        }
+        return false;
     }
     
     Word getRandomSlang() {
