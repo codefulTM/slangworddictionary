@@ -4,6 +4,7 @@
  */
 package project.sources;
 import java.util.*;
+import java.io.*;
 /**
  *
  * @author WINDOWS 10
@@ -12,8 +13,51 @@ public class Dictionary {
     private HashMap<String, ArrayList<String>> slanglist;
     private HashMap<String, ArrayList<String>> history;
     
-    public void findByName(String name) {
-        
+    Dictionary() {
+        try {
+            File f1 = new File("../data/slanglist.bin");
+            File f2 = new File("../data/history.bin");
+            ObjectInputStream ois;
+            ObjectOutputStream oos;
+            BufferedReader br;
+            if(f1.exists()) {
+                ois = new ObjectInputStream(new FileInputStream(f1));
+                this.slanglist = (HashMap<String, ArrayList<String>>)ois.readObject();
+                ois.close();
+            }
+            else {
+                br = new BufferedReader(new FileReader("../data/slang.txt"));
+                String line;
+                String name;
+                ArrayList<String> defs;
+                while((line = br.readLine()) != null) {
+                    String[] substrs = line.split("[`|]");
+                    name = substrs[0];
+                    defs = (ArrayList<String>)Arrays.asList(Arrays.copyOfRange(substrs, 1, substrs.length));
+                    this.slanglist.put(name, defs);
+                }
+                oos = new ObjectOutputStream(new FileOutputStream(f1));
+                oos.writeObject(this.slanglist);
+                oos.flush();
+                oos.close();
+            }
+            
+            if(f2.exists()) {
+                ois = new ObjectInputStream(new FileInputStream(f2));
+                this.history = (HashMap<String, ArrayList<String>>)ois.readObject();
+            }
+            else {
+                this.history = new HashMap<String, ArrayList<String>>();
+            }
+        }
+        catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    public ArrayList<Word> findByName(String name) {
+        ArrayList<Word> foundlist = new ArrayList<Word>();
+        return foundlist;
     }
     
     public ArrayList<Word> findByDefinition(String definition) {
@@ -53,10 +97,6 @@ public class Dictionary {
     
     boolean saveProgress(String filename) {
         return true;
-    }
-    
-    Dictionary(String filename) {
-        
     }
     
     boolean addSlangWord(Word w) {
