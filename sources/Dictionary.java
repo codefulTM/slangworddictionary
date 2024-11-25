@@ -125,9 +125,24 @@ public class Dictionary {
         return false;
     }
     
-    Word getRandomSlang() {
-        Word w = new Word("", "");
-        return w;
+    ArrayList<Word> getRandomSlang() {
+        ArrayList<Word> list = null;
+        // dem so key trong slang list -> n
+        int n = this.slanglist.size();
+        int i = (int)Math.floor(Math.random() * n);
+        int cnt = 0;
+        for(var e: this.slanglist.entrySet()) {
+            if(cnt == i) {
+                list = new ArrayList<>();
+                ArrayList<String> deflist = e.getValue();
+                for(int j = 0; j < deflist.size(); j++) {
+                    list.add(new Word(e.getKey(), deflist.get(j)));
+                }
+                return list;
+            }
+            cnt++;
+        }
+        return list;
     }
     
     boolean resetDictionary(String filename) {
