@@ -15,7 +15,5 @@ public class Project1 {
     public static void main(String[] args) {
         // TODO code application logic here
         Dictionary d = new Dictionary();
-         
     }
-    
 }

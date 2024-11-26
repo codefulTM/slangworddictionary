@@ -177,6 +177,20 @@ public class Dictionary {
         }
     }
     
+    void editSlangWord(Word oldW, Word newW) {
+        ArrayList<String> deflist = this.slanglist.get(oldW.getName());
+        for(int i = 0; i < deflist.size(); i++) {
+            if(deflist.get(i).compareTo(oldW.getDefinition()) == 0) {
+                deflist.remove(i);
+                break;
+            }
+        }
+        boolean flag = this.addSlangWord(newW.getName(), newW.getDefinition());
+        if(!flag) {
+            this.addDuplicateSlangWord(newW.getName(), newW.getDefinition());
+        }
+    }
+    
     void saveHistory() {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("../data/history.bin"));
