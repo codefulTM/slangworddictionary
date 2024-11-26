@@ -166,14 +166,19 @@ public class Dictionary {
                 this.slanglist.put(name, defs);
             }
             br.close();
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("../data/slanglist.bin"));
-            oos.writeObject(this.slanglist);
-            oos.flush();
-            oos.close();
-            
-            // clear the history and write back to the binary file
+            // clear the history 
             this.history = new HashSet<>();
-            oos = new ObjectOutputStream(new FileOutputStream("../data/history.bin"));
+            // save progress
+            this.saveProgress();
+        }
+        catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    void saveHistory() {
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("../data/history.bin"));
             oos.writeObject(this.history);
             oos.flush();
             oos.close();
@@ -183,19 +188,20 @@ public class Dictionary {
         }
     }
     
-    void saveProgress() {
+    void saveSlanglist() {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("../data/slanglist.bin"));
             oos.writeObject(this.slanglist);
-            oos.flush();
-            oos.close();
-            oos = new ObjectOutputStream(new FileOutputStream("../data/history.bin"));
-            oos.writeObject(this.history);
             oos.flush();
             oos.close();
         }
         catch(Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+    
+    void saveProgress() {
+        saveSlanglist();
+        saveHistory();
     }
 }
