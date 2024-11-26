@@ -37,10 +37,7 @@ public class Dictionary {
                     this.slanglist.put(name, defs);
                 }
                 br.close();
-                oos = new ObjectOutputStream(new FileOutputStream(f1));
-                oos.writeObject(this.slanglist);
-                oos.flush();
-                oos.close();
+                this.saveSlanglist();
             }
             if(f2.exists()) {
                 ois = new ObjectInputStream(new FileInputStream(f2));
@@ -48,9 +45,7 @@ public class Dictionary {
             }
             else {
                 this.history = new HashSet<>();
-                oos = new ObjectOutputStream(new FileOutputStream(f2));
-                oos.writeObject(this.history);
-                oos.close();
+                this.saveHistory();
             }
         }
         catch(Exception e) {
@@ -68,6 +63,7 @@ public class Dictionary {
         }
         // add to history
         this.history.add(name);
+        this.saveHistory();
         // generate word list
         ArrayList<Word> foundlist = new ArrayList<>();
         for(int i = 0; i < deflist.size(); i++) {
@@ -95,6 +91,7 @@ public class Dictionary {
             this.history.add(namelist.get(i));
             foundlist.addAll(this.findByName(namelist.get(i)));
         }
+        this.saveHistory();
         return foundlist;
     }
     
@@ -110,6 +107,7 @@ public class Dictionary {
             ArrayList<String> deflist = new ArrayList<>();
             deflist.add(definition);
             this.slanglist.put(name, deflist);
+            this.saveSlanglist();
             return true;
         }
     }
@@ -118,16 +116,19 @@ public class Dictionary {
         ArrayList<String> deflist = new ArrayList<>();
         deflist.add(definition);
         this.slanglist.put(name, deflist);
+        this.saveSlanglist();
     }
     
     void addDuplicateSlangWord(String name, String definition) {
         this.slanglist.get(name).add(definition);
+        this.saveSlanglist();
     }
     
     boolean removeByName(String name) {
         if(this.slanglist.containsKey(name)) {
             this.slanglist.remove(name);
             this.history.remove(name);
+            this.saveProgress();
             return true;
         }
         return false;
