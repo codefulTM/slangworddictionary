@@ -8,6 +8,89 @@ package project.sources;
  *
  * @author WINDOWS 10
  */
+import java.awt.events.*;
+import javax.swing.*;
+
+class UserInterface {
+    private JPanel sidebar = null;
+    private JPanel mainCnt = null;
+    
+    void initSidebar() {
+        this.sidebar = new JPanel();
+        
+        // define headings
+        JLabel heading1 = new JLabel("TM Dictionary");
+        JLabel heading2 = new JLabel("Menu");
+        this.sidebar.add(heading1);
+        this.sidebar.add(heading2);
+        
+        // define group 1 - Basic functionalities
+        JPanel group1 = new JPanel();
+        // history area
+        JPanel historyArea = new JPanel();
+        JLabel ha1 = new JLabel("Search History");
+        JLabel ha2 = new JLabel("Click here to view your search history.");
+        historyArea.add(ha1);
+        historyArea.add(ha2);
+        group1.add(historyArea);
+        // add new area
+        JPanel addNewArea = new JPanel();
+        JLabel an1 = new JLabel("Add new");
+        JLabel an2 = new JLabel("Click here to add new slang word.");
+        addNewArea.add(an1);
+        addNewArea.add(an2);
+        group1.add(addNewArea);
+        // add slang word of the day area
+        JPanel swotdArea = new JPanel();
+        JLabel swotd1 = new JLabel("Slang word of the day");
+        JLabel swotd2 = new JLabel("Click here to view the slang word of the day!");
+        swotdArea.add(swotd1);
+        swotdArea.add(swotd2);
+        group1.add(swotdArea);
+        // add group 1 to sidebar
+        this.sidebar.add(group1);
+        
+        // define group 2 - Guess-the-word Area
+        JPanel group2 = new JPanel();
+        // guess the slang word area
+        JPanel gtswArea = new JPanel();
+        JLabel gtsw1 = new JLabel("Guess the slang word");
+        JLabel gtsw2 = new JLabel("Try and guess the meaning of the slang word.");
+        gtswArea.add(gtsw1);
+        gtswArea.add(gtsw2);
+        group2.add(gtswArea);
+        // guess the definition area
+        JPanel gtdArea = new JPanel();
+        JLabel gtd1 = new JLabel("Guess the definition");
+        JLabel gtd2 = new JLabel("Try and guess the slang word using the definition");
+        gtdArea.add(gtd1);    
+        gtdArea.add(gtd2);
+        group2.add(gtdArea);
+        // add group 2 to sidebar
+        this.sidebar.add(group2);
+        
+        // define group 3 - Reset Area
+        JPanel group3 = new JPanel();
+        // Reset Area
+        JPanel resetArea = new JPanel();
+        JLabel r1 = new JLabel("Reset slang list");
+        JLabel r2 = new JLabel("Restore the slang list to our default ones");
+        resetArea.add(r1);
+        resetArea.add(r2);
+        group3.add(resetArea);
+        // add group 3 to sidebar
+        this.sidebar.add(group3);
+    }
+    
+    void initMainCnt() {
+        
+    }
+    
+    void display() {
+        
+    }
+}
+
 public class Project1 {
     /**
      * @param args the command line arguments
