@@ -48,6 +48,9 @@ public class Dictionary {
             }
             else {
                 this.history = new HashSet<>();
+                oos = new ObjectOutputStream(new FileOutputStream(f2));
+                oos.writeObject(this.history);
+                oos.close();
             }
         }
         catch(Exception e) {
