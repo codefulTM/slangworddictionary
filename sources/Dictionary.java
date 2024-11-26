@@ -189,6 +189,7 @@ public class Dictionary {
         if(!flag) {
             this.addDuplicateSlangWord(newW.getName(), newW.getDefinition());
         }
+        this.saveSlanglist();
     }
     
     void saveHistory() {
