@@ -8,7 +8,7 @@ package project.sources;
  *
  * @author WINDOWS 10
  */
-import java.awt.events.*;
+import java.awt.event.*;
 import javax.swing.*;
 
 class UserInterface {
@@ -83,11 +83,42 @@ class UserInterface {
     }
     
     void initMainCnt() {
+        this.mainCnt = new JPanel();
+        
+        // define group 1 - Search area
+        JPanel group1 = new JPanel();
+        JLabel heading = new JLabel("TM Slang Words Dictionary");
+        JTextField searchBar = new JTextField("Type here to search for Slang words!");
+        JButton nameSearch = new JButton("Search by name");
+        JButton defSearch = new JButton("Search by definition");
+        group1.add(heading);
+        group1.add(searchBar);
+        group1.add(nameSearch);
+        group1.add(defSearch);
+        this.mainCnt.add(group1);
+        
+        // define group 2 - Search result
+        JPanel group2 = new JPanel();
+        this.mainCnt.add(group2);
+        
         
     }
     
     void display() {
+        // initialize components
+        this.initSidebar();
+        this.initMainCnt();
         
+        // create frame
+        JFrame f = new JFrame("TM Dictionary");
+        
+        // add jpanels to frame
+        f.add(this.sidebar);
+        f.add(this.mainCnt);
+        
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        f.setVisible(true);
     }
 }
 
@@ -97,6 +128,8 @@ public class Project1 {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        Dictionary d = new Dictionary();
+        
+        UserInterface UI = new UserInterface();
+        UI.display();
     }
 }
