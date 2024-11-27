@@ -10,10 +10,10 @@ import java.io.*;
  * @author WINDOWS 10
  */
 public class Dictionary {
-    private HashMap<String, ArrayList<String>> slanglist = null;
-    private HashSet<String> history = null;
+    public static HashMap<String, ArrayList<String>> slanglist = null;
+    public static HashSet<String> history = null;
     
-    Dictionary() {
+    public static void init() {
         try {
             File f1 = new File("../data/slanglist.bin");
             File f2 = new File("../data/history.bin");
@@ -22,7 +22,7 @@ public class Dictionary {
             BufferedReader br;
             if(f1.exists()) {
                 ois = new ObjectInputStream(new FileInputStream(f1));
-                this.slanglist = (HashMap<String, ArrayList<String>>)ois.readObject();
+                Dictionary.slanglist = (HashMap<String, ArrayList<String>>)ois.readObject();
                 ois.close();
             }
             else {
@@ -34,18 +34,18 @@ public class Dictionary {
                     String[] substrs = line.split("[`|]");
                     name = substrs[0];
                     defs = (ArrayList<String>)Arrays.asList(Arrays.copyOfRange(substrs, 1, substrs.length));
-                    this.slanglist.put(name, defs);
+                    Dictionary.slanglist.put(name, defs);
                 }
                 br.close();
-                this.saveSlanglist();
+                Dictionary.saveSlanglist();
             }
             if(f2.exists()) {
                 ois = new ObjectInputStream(new FileInputStream(f2));
-                this.history = (HashSet<String>)ois.readObject();
+                Dictionary.history = (HashSet<String>)ois.readObject();
             }
             else {
-                this.history = new HashSet<>();
-                this.saveHistory();
+                Dictionary.history = new HashSet<>();
+                Dictionary.saveHistory();
             }
         }
         catch(Exception e) {
@@ -53,17 +53,17 @@ public class Dictionary {
         }
     }
     
-    public ArrayList<Word> findByName(String name) {
-        if(this.slanglist == null) {
+    public static ArrayList<Word> findByName(String name) {
+        if(Dictionary.slanglist == null) {
             return null;
         }
-        ArrayList<String> deflist = this.slanglist.get(name);
+        ArrayList<String> deflist = Dictionary.slanglist.get(name);
         if(deflist == null) {
             return null; // the slang is not found
         }
         // add to history
-        this.history.add(name);
-        this.saveHistory();
+        Dictionary.history.add(name);
+        Dictionary.saveHistory();
         // generate word list
         ArrayList<Word> foundlist = new ArrayList<>();
         for(int i = 0; i < deflist.size(); i++) {
@@ -72,12 +72,12 @@ public class Dictionary {
         return foundlist;
     }
     
-    public ArrayList<Word> findByDefinition(String definition) {
-        if(this.slanglist == null) {
+    public static ArrayList<Word> findByDefinition(String definition) {
+        if(Dictionary.slanglist == null) {
             return null;
         }
         ArrayList<String> namelist = new ArrayList<>();
-        for(var e: this.slanglist.entrySet()) {
+        for(var e: Dictionary.slanglist.entrySet()) {
             ArrayList<String> defSet = e.getValue();
             for(int i = 0; i < defSet.size(); i++) {
                 if(defSet.get(i).contains(definition)) {
@@ -88,58 +88,54 @@ public class Dictionary {
         }
         ArrayList<Word> foundlist = new ArrayList<>();
         for(int i = 0; i < namelist.size(); i++) {
-            this.history.add(namelist.get(i));
-            foundlist.addAll(this.findByName(namelist.get(i)));
+            Dictionary.history.add(namelist.get(i));
+            foundlist.addAll(Dictionary.findByName(namelist.get(i)));
         }
-        this.saveHistory();
+        Dictionary.saveHistory();
         return foundlist;
     }
     
-    public HashSet<String> getHistory() {
-        return this.history;
-    }
-    
-    boolean addSlangWord(String name, String definition) {
-        if(this.slanglist.containsKey(name)) {
+    public static boolean addSlangWord(String name, String definition) {
+        if(Dictionary.slanglist.containsKey(name)) {
             return false;
         }
         else {
             ArrayList<String> deflist = new ArrayList<>();
             deflist.add(definition);
-            this.slanglist.put(name, deflist);
-            this.saveSlanglist();
+            Dictionary.slanglist.put(name, deflist);
+            Dictionary.saveSlanglist();
             return true;
         }
     }
     
-    void overwriteSlangWord(String name, String definition) {
+    public static void overwriteSlangWord(String name, String definition) {
         ArrayList<String> deflist = new ArrayList<>();
         deflist.add(definition);
-        this.slanglist.put(name, deflist);
-        this.saveSlanglist();
+        Dictionary.slanglist.put(name, deflist);
+        Dictionary.saveSlanglist();
     }
     
-    void addDuplicateSlangWord(String name, String definition) {
-        this.slanglist.get(name).add(definition);
-        this.saveSlanglist();
+    public static void addDuplicateSlangWord(String name, String definition) {
+        Dictionary.slanglist.get(name).add(definition);
+        Dictionary.saveSlanglist();
     }
     
-    boolean removeByName(String name) {
-        if(this.slanglist.containsKey(name)) {
-            this.slanglist.remove(name);
-            this.history.remove(name);
-            this.saveProgress();
+    public static boolean removeByName(String name) {
+        if(Dictionary.slanglist.containsKey(name)) {
+            Dictionary.slanglist.remove(name);
+            Dictionary.history.remove(name);
+            Dictionary.saveProgress();
             return true;
         }
         return false;
     }
     
-    ArrayList<Word> getRandomSlang() {
+    public static ArrayList<Word> getRandomSlang() {
         ArrayList<Word> list = null;
-        int n = this.slanglist.size();
+        int n = Dictionary.slanglist.size();
         int i = (int)Math.floor(Math.random() * n);
         int cnt = 0;
-        for(var e: this.slanglist.entrySet()) {
+        for(var e: Dictionary.slanglist.entrySet()) {
             if(cnt == i) {
                 list = new ArrayList<>();
                 ArrayList<String> deflist = e.getValue();
@@ -153,7 +149,7 @@ public class Dictionary {
         return list;
     }
     
-    void resetDictionary() {
+    public static void resetDictionary() {
         try {
             // regenerate the slang list from slang.txt and write back to the binary file
             BufferedReader br = new BufferedReader(new FileReader("../data/slang.txt"));
@@ -164,38 +160,38 @@ public class Dictionary {
                 String[] substrs = line.split("[`|]");
                 name = substrs[0];
                 defs = (ArrayList<String>)Arrays.asList(Arrays.copyOfRange(substrs, 1, substrs.length));
-                this.slanglist.put(name, defs);
+                Dictionary.slanglist.put(name, defs);
             }
             br.close();
             // clear the history 
-            this.history = new HashSet<>();
+            Dictionary.history = new HashSet<>();
             // save progress
-            this.saveProgress();
+            Dictionary.saveProgress();
         }
         catch(Exception e) {
             System.out.println(e.getMessage());
         }
     }
     
-    void editSlangWord(Word oldW, Word newW) {
-        ArrayList<String> deflist = this.slanglist.get(oldW.getName());
+    public static void editSlangWord(Word oldW, Word newW) {
+        ArrayList<String> deflist = Dictionary.slanglist.get(oldW.getName());
         for(int i = 0; i < deflist.size(); i++) {
             if(deflist.get(i).compareTo(oldW.getDefinition()) == 0) {
                 deflist.remove(i);
                 break;
             }
         }
-        boolean flag = this.addSlangWord(newW.getName(), newW.getDefinition());
+        boolean flag = Dictionary.addSlangWord(newW.getName(), newW.getDefinition());
         if(!flag) {
-            this.addDuplicateSlangWord(newW.getName(), newW.getDefinition());
+            Dictionary.addDuplicateSlangWord(newW.getName(), newW.getDefinition());
         }
-        this.saveSlanglist();
+        Dictionary.saveSlanglist();
     }
     
-    void saveHistory() {
+    public static void saveHistory() {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("../data/history.bin"));
-            oos.writeObject(this.history);
+            oos.writeObject(Dictionary.history);
             oos.flush();
             oos.close();
         }
@@ -204,10 +200,10 @@ public class Dictionary {
         }
     }
     
-    void saveSlanglist() {
+    public static void saveSlanglist() {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("../data/slanglist.bin"));
-            oos.writeObject(this.slanglist);
+            oos.writeObject(Dictionary.slanglist);
             oos.flush();
             oos.close();
         }
@@ -216,8 +212,8 @@ public class Dictionary {
         }
     }
     
-    void saveProgress() {
-        saveSlanglist();
-        saveHistory();
+    public static void saveProgress() {
+        Dictionary.saveSlanglist();
+        Dictionary.saveHistory();
     }
 }
