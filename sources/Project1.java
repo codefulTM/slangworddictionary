@@ -10,6 +10,7 @@ package project.sources;
  */
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.border.Border;
 
 class UserInterface {
     private JPanel sidebar = null;
@@ -17,6 +18,7 @@ class UserInterface {
     
     void initSidebar() {
         // define fonts
+        Font h1 = new Font("Arial", Font.BOLD, 42);
         Font h2 = new Font("Arial", Font.BOLD, 30);
         Font h3 = new Font("Arial", Font.BOLD, 20);
         Font p = new Font("Arial", Font.PLAIN, 16);
@@ -162,23 +164,73 @@ class UserInterface {
     }
     
     void initMainCnt() {
-        this.mainCnt = new JPanel();
+        // define fonts
+        Font h1 = new Font("Arial", Font.BOLD, 42);
+        Font h2 = new Font("Arial", Font.BOLD, 30);
+        Font h3 = new Font("Arial", Font.BOLD, 20);
+        Font p = new Font("Arial", Font.PLAIN, 16);
         
+        // define colors
+        Color blue = Color.decode("#020122");
+        Color orange = Color.decode("#FC9E4F");
+        Color transparent = new Color(0, 0, 0, 0);
+        
+        this.mainCnt = new JPanel();
+        this.mainCnt.setBackground(Color.WHITE);
+        this.mainCnt.setLayout(new GridBagLayout());
+        this.mainCnt.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 2;
+        gbc.weightx = 1;
+        gbc.weighty = 0.2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         // define group 1 - Search area
         JPanel group1 = new JPanel();
+        group1.setLayout(new BoxLayout(group1, BoxLayout.Y_AXIS));
+        group1.setBackground(transparent);
         JLabel heading = new JLabel("TM Slang Words Dictionary");
-        JTextField searchBar = new JTextField("Type here to search for Slang words!");
+        heading.setFont(h1);
+        JTextField searchBar = new JTextField();
+        searchBar.setPreferredSize(new Dimension(-1, 30));
+        JPanel buttonGroup = new JPanel();
+        buttonGroup.setLayout(new FlowLayout());
         JButton nameSearch = new JButton("Search by name");
+        nameSearch.setBackground(orange);
+        Border padding = BorderFactory.createEmptyBorder(5, 10, 5, 10);
+        Border outline = BorderFactory.createLineBorder(Color.BLACK);
+        Border b = BorderFactory.createCompoundBorder(outline, padding);
+        nameSearch.setBorder(b);
+        nameSearch.setSize(30,15);
+        nameSearch.setFont(h3);
         JButton defSearch = new JButton("Search by definition");
+        defSearch.setBackground(orange);
+        defSearch.setBorder(b);
+        defSearch.setSize(30,15);
+        defSearch.setFont(h3);
+        buttonGroup.add(nameSearch);
+        buttonGroup.add(defSearch);
+        buttonGroup.setBackground(transparent);
         group1.add(heading);
         group1.add(searchBar);
-        group1.add(nameSearch);
-        group1.add(defSearch);
-        this.mainCnt.add(group1);
+        group1.add(buttonGroup);
+        this.mainCnt.add(group1, gbc);
         
-        // define group 2 - Search result
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 8;
+        gbc.weightx = 1;
+        gbc.weighty = 0.8;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.FIRST_LINE_START;
         JPanel group2 = new JPanel();
-        this.mainCnt.add(group2);
+        group2.setLayout(new FlowLayout(FlowLayout.LEFT));
+        group2.setBackground(transparent);
+        this.mainCnt.add(group2, gbc);
     }
     
     void display() {
@@ -188,12 +240,15 @@ class UserInterface {
         
         // create frame
         JFrame f = new JFrame("TM Dictionary");
-        f.setLayout(new BorderLayout());
+        Container pane = f.getContentPane();
+        pane.setLayout(new BorderLayout());
+        
         
         // add jpanels to frame
-        f.add(this.sidebar, BorderLayout.WEST);
-        f.add(this.mainCnt, BorderLayout.CENTER);
+        pane.add(this.sidebar, BorderLayout.WEST);
+        pane.add(this.mainCnt, BorderLayout.CENTER);
         
+        f.setSize(800, 400);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setExtendedState(JFrame.MAXIMIZED_BOTH);
         f.setVisible(true);
