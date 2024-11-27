@@ -9,8 +9,37 @@ package project.sources;
  * @author WINDOWS 10
  */
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.Border;
+
+class MyMouseListener implements MouseListener {
+    private JComponent component = null;
+    
+    MyMouseListener(JComponent component) {
+        this.component = component;
+    }
+    
+    public void mouseEntered(MouseEvent e) {
+        this.component.setBackground(Color.decode("#FFBE88"));
+    }
+    
+    public void mouseExited(MouseEvent e) {
+        this.component.setBackground(Color.decode("#FC9E4F"));
+    }
+    
+    public void mouseClicked(MouseEvent e) {
+        
+    }
+    
+    public void mouseReleased(MouseEvent e) {
+        
+    }
+    
+    public void mousePressed(MouseEvent e) {
+        
+    }
+}
 
 class UserInterface {
     private JPanel sidebar = null;
@@ -54,6 +83,7 @@ class UserInterface {
         group1.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         // history area
         JPanel historyArea = new JPanel();
+        historyArea.addMouseListener(new MyMouseListener(historyArea));
         historyArea.setLayout(new BoxLayout(historyArea, BoxLayout.Y_AXIS));
         historyArea.setBackground(transparent);
         JLabel ha1 = new JLabel("Search History");
@@ -68,6 +98,7 @@ class UserInterface {
         group1.add(Box.createRigidArea(new Dimension(0, 30)));
         // add new area
         JPanel addNewArea = new JPanel();
+        addNewArea.addMouseListener(new MyMouseListener(addNewArea));
         addNewArea.setLayout(new BoxLayout(addNewArea, BoxLayout.Y_AXIS));
         addNewArea.setBackground(transparent);
         JLabel an1 = new JLabel("Add new");
@@ -82,6 +113,7 @@ class UserInterface {
         group1.add(Box.createRigidArea(new Dimension(0, 30)));
         // add slang word of the day area
         JPanel swotdArea = new JPanel();
+        swotdArea.addMouseListener(new MyMouseListener(swotdArea));
         swotdArea.setLayout(new BoxLayout(swotdArea, BoxLayout.Y_AXIS));
         swotdArea.setBackground(transparent);
         JLabel swotd1 = new JLabel("Slang word of the day");
@@ -106,6 +138,7 @@ class UserInterface {
         group2.setBackground(orange);
         // guess the slang word area
         JPanel gtswArea = new JPanel();
+        gtswArea.addMouseListener(new MyMouseListener(gtswArea));
         gtswArea.setLayout(new BoxLayout(gtswArea, BoxLayout.Y_AXIS));
         gtswArea.setBackground(transparent);
         JLabel gtsw1 = new JLabel("Guess the slang word");
@@ -120,6 +153,7 @@ class UserInterface {
         group2.add(Box.createRigidArea(new Dimension(0, 30)));
         // guess the definition area
         JPanel gtdArea = new JPanel();
+        gtdArea.addMouseListener(new MyMouseListener(gtdArea));
         gtdArea.setLayout(new BoxLayout(gtdArea, BoxLayout.Y_AXIS));
         gtdArea.setBackground(transparent);
         JLabel gtd1 = new JLabel("Guess the definition");
@@ -144,6 +178,7 @@ class UserInterface {
         group3.setBackground(orange);
         // Reset Area
         JPanel resetArea = new JPanel();
+        resetArea.addMouseListener(new MyMouseListener(resetArea));
         resetArea.setLayout(new BoxLayout(resetArea, BoxLayout.Y_AXIS));
         resetArea.setBackground(transparent);
         JLabel r1 = new JLabel("Reset slang list");
@@ -198,6 +233,7 @@ class UserInterface {
         JPanel buttonGroup = new JPanel();
         buttonGroup.setLayout(new FlowLayout());
         JButton nameSearch = new JButton("Search by name");
+        nameSearch.addMouseListener(new MyMouseListener(nameSearch));
         nameSearch.setBackground(orange);
         Border padding = BorderFactory.createEmptyBorder(5, 10, 5, 10);
         Border outline = BorderFactory.createLineBorder(Color.BLACK);
@@ -206,12 +242,20 @@ class UserInterface {
         nameSearch.setSize(30,15);
         nameSearch.setFont(h3);
         JButton defSearch = new JButton("Search by definition");
+        defSearch.addMouseListener(new MyMouseListener(defSearch));
         defSearch.setBackground(orange);
         defSearch.setBorder(b);
         defSearch.setSize(30,15);
         defSearch.setFont(h3);
+        JButton clearSearch = new JButton("Clear search");
+        clearSearch.addMouseListener(new MyMouseListener(clearSearch));
+        clearSearch.setBackground(orange);
+        clearSearch.setBorder(b);
+        clearSearch.setSize(30,15);
+        clearSearch.setFont(h3);
         buttonGroup.add(nameSearch);
         buttonGroup.add(defSearch);
+        buttonGroup.add(clearSearch);
         buttonGroup.setBackground(transparent);
         group1.add(heading);
         group1.add(searchBar);
