@@ -5,6 +5,7 @@
 package project.sources;
 import java.util.*;
 import java.io.*;
+import java.time.*;
 /**
  *
  * @author WINDOWS 10
@@ -15,8 +16,8 @@ public class Dictionary {
     
     public static void init() {
         try {
-            File f1 = new File("../data/slanglist.bin");
-            File f2 = new File("../data/history.bin");
+            File f1 = new File("src/project/data/slanglist.bin");
+            File f2 = new File("src/project/data/history.bin");
             ObjectInputStream ois;
             ObjectOutputStream oos;
             BufferedReader br;
@@ -26,14 +27,15 @@ public class Dictionary {
                 ois.close();
             }
             else {
-                br = new BufferedReader(new FileReader("../data/slang.txt"));
+                Dictionary.slanglist = new HashMap<>();
+                br = new BufferedReader(new FileReader("src/project/data/slang.txt"));
                 String line;
                 String name;
                 ArrayList<String> defs;
                 while((line = br.readLine()) != null) {
                     String[] substrs = line.split("[`|]");
                     name = substrs[0];
-                    defs = (ArrayList<String>)Arrays.asList(Arrays.copyOfRange(substrs, 1, substrs.length));
+                    defs = new ArrayList<>(Arrays.asList(Arrays.copyOfRange(substrs, 1, substrs.length)));
                     Dictionary.slanglist.put(name, defs);
                 }
                 br.close();
@@ -42,6 +44,7 @@ public class Dictionary {
             if(f2.exists()) {
                 ois = new ObjectInputStream(new FileInputStream(f2));
                 Dictionary.history = (HashSet<String>)ois.readObject();
+                System.out.println(Dictionary.history.size());
             }
             else {
                 Dictionary.history = new HashSet<>();
@@ -130,13 +133,18 @@ public class Dictionary {
         return false;
     }
     
-    public static ArrayList<Word> getRandomSlang() {
-        ArrayList<Word> list = null;
+    public static ArrayList<Word> getDailySlang() {
+        LocalDate start = LocalDate.of(2024, 11, 29);
+        LocalDate end = LocalDate.now();
+        Period p = Period.between(start, end);
         int n = Dictionary.slanglist.size();
-        int i = (int)Math.floor(Math.random() * n);
+        int idx = p.getDays() % n;
         int cnt = 0;
+        ArrayList<Word> list = null;
         for(var e: Dictionary.slanglist.entrySet()) {
-            if(cnt == i) {
+            if(cnt == idx) {
+                System.out.println(e.getKey());
+                System.out.println(e.getValue());
                 list = new ArrayList<>();
                 ArrayList<String> deflist = e.getValue();
                 for(int j = 0; j < deflist.size(); j++) {
@@ -149,10 +157,38 @@ public class Dictionary {
         return list;
     }
     
+    public static ArrayList<Word> getCollectionOfRandSlangs() {
+        int cntSlangs = Dictionary.slanglist.size();
+        int cntChoices = 4;
+        if(cntSlangs < 4) {
+            cntChoices = cntSlangs;
+        }
+        HashSet<Integer> idxSet = new HashSet<>();
+        while(idxSet.size() < cntChoices) {
+            idxSet.add((int)Math.floor(Math.random() * cntSlangs));
+        }
+        ArrayList<Word> wordlists = new ArrayList<>();
+        int idx = 0;
+        for(var e: Dictionary.slanglist.entrySet()) {
+            if(idxSet.contains(idx)) {
+                String name = e.getKey();
+                int numOfDefs = e.getValue().size();
+                String def = e.getValue().get((int)Math.floor(Math.random() * numOfDefs));
+                Word temp = new Word(name, def);
+                wordlists.add(temp);
+                if(wordlists.size() == cntChoices) {
+                    break;
+                }
+            }
+            idx++;
+        }
+        return wordlists;
+    }
+    
     public static void resetDictionary() {
         try {
             // regenerate the slang list from slang.txt and write back to the binary file
-            BufferedReader br = new BufferedReader(new FileReader("../data/slang.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("src/project/data/slang.txt"));
             String line;
             String name;
             ArrayList<String> defs;
@@ -190,9 +226,8 @@ public class Dictionary {
     
     public static void saveHistory() {
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("../data/history.bin"));
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("src/project/data/history.bin"));
             oos.writeObject(Dictionary.history);
-            oos.flush();
             oos.close();
         }
         catch(Exception e) {
@@ -202,9 +237,8 @@ public class Dictionary {
     
     public static void saveSlanglist() {
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("../data/slanglist.bin"));
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("src/project/data/slanglist.bin"));
             oos.writeObject(Dictionary.slanglist);
-            oos.flush();
             oos.close();
         }
         catch(Exception e) {

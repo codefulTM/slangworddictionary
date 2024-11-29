@@ -10,6 +10,7 @@ package project.sources;
  */
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
 import javax.swing.*;
 import javax.swing.border.Border;
 
@@ -44,6 +45,25 @@ class MyMouseListener implements MouseListener {
 class UserInterface {
     private JPanel sidebar = null;
     private JPanel mainCnt = null;
+    
+    JPanel createWordCards(Word w) {
+        Font h2 = new Font("Arial", Font.BOLD, 30);
+        Font h3 = new Font("Arial", Font.BOLD, 20);
+        
+        JPanel card = new JPanel();
+        card.setPreferredSize(new Dimension(100, 200));
+        card.setBackground(Color.decode("#E1F0C4"));
+        card.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        card.setLayout(new BorderLayout());
+        JLabel heading = new JLabel(w.getName());
+        heading.setFont(h2);
+        card.add(heading, BorderLayout.NORTH);
+        JLabel desc = new JLabel(w.getDefinition());
+        desc.setFont(h3);
+        card.add(desc, BorderLayout.CENTER);
+        
+        return card;
+    }
     
     void initSidebar() {
         // define fonts
@@ -81,6 +101,21 @@ class UserInterface {
         group1.setLayout(new BoxLayout(group1, BoxLayout.Y_AXIS));
         group1.setBackground(orange);
         group1.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        // search area
+        JPanel searchArea = new JPanel();
+        searchArea.addMouseListener(new MyMouseListener(searchArea));
+        searchArea.setLayout(new BoxLayout(searchArea, BoxLayout.Y_AXIS));
+        searchArea.setBackground(transparent);
+        JLabel s1 = new JLabel("Search");
+        s1.setFont(h3);
+        s1.setForeground(Color.BLACK);
+        JLabel s2 = new JLabel("<html>Click here to view your search history.</html>");
+        s2.setFont(p);
+        s2.setForeground(Color.BLACK);
+        searchArea.add(s1);
+        searchArea.add(s2);
+        group1.add(searchArea);
+        group1.add(Box.createRigidArea(new Dimension(0, 30)));
         // history area
         JPanel historyArea = new JPanel();
         historyArea.addMouseListener(new MyMouseListener(historyArea));
@@ -116,10 +151,10 @@ class UserInterface {
         swotdArea.addMouseListener(new MyMouseListener(swotdArea));
         swotdArea.setLayout(new BoxLayout(swotdArea, BoxLayout.Y_AXIS));
         swotdArea.setBackground(transparent);
-        JLabel swotd1 = new JLabel("Slang word of the day");
+        JLabel swotd1 = new JLabel("Slang words of the day");
         swotd1.setFont(h3);
         swotd1.setForeground(Color.BLACK);
-        JLabel swotd2 = new JLabel("<html>Click here to view the slang word of the day!</html>");
+        JLabel swotd2 = new JLabel("<html>Click here to view the slang words of today!</html>");
         swotd2.setFont(p);
         swotd2.setForeground(Color.BLACK);
         swotdArea.add(swotd1);
@@ -198,8 +233,7 @@ class UserInterface {
         this.sidebar.add(Box.createRigidArea(new Dimension(10, 0)));
     }
     
-    void initMainCnt() {
-        // define fonts
+    JPanel generateSearchCard() {
         Font h1 = new Font("Arial", Font.BOLD, 42);
         Font h2 = new Font("Arial", Font.BOLD, 30);
         Font h3 = new Font("Arial", Font.BOLD, 20);
@@ -210,28 +244,46 @@ class UserInterface {
         Color orange = Color.decode("#FC9E4F");
         Color transparent = new Color(0, 0, 0, 0);
         
-        this.mainCnt = new JPanel();
-        this.mainCnt.setBackground(Color.WHITE);
-        this.mainCnt.setLayout(new GridBagLayout());
-        this.mainCnt.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        JPanel searchCard = new JPanel();
+        searchCard.setBackground(Color.WHITE);
+        searchCard.setLayout(new GridBagLayout());
+        searchCard.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        // define group 1 - Headings
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.gridheight = 1;
         gbc.gridwidth = 1;
-        gbc.gridheight = 2;
         gbc.weightx = 1;
-        gbc.weighty = 0.2;
+        gbc.weighty = 0.1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        // define group 1 - Search area
         JPanel group1 = new JPanel();
         group1.setLayout(new BoxLayout(group1, BoxLayout.Y_AXIS));
         group1.setBackground(transparent);
-        JLabel heading = new JLabel("TM Slang Words Dictionary");
-        heading.setFont(h1);
+        JLabel heading1 = new JLabel("TM Slang Words Dictionary");
+        heading1.setFont(h1);
+        group1.add(heading1);
+        JLabel heading2 = new JLabel("Search");
+        heading2.setFont(h1);
+        group1.add(heading2);
+        searchCard.add(group1, gbc);
+        
+        // define group 2 - Search area
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.weightx = 1;
+        gbc.weighty = 0.1;
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JPanel group2 = new JPanel();
+        group2.setLayout(new BoxLayout(group2, BoxLayout.Y_AXIS));
         JTextField searchBar = new JTextField();
-        searchBar.setPreferredSize(new Dimension(-1, 30));
+        searchBar.setPreferredSize(new Dimension(400, 30));
         JPanel buttonGroup = new JPanel();
-        buttonGroup.setLayout(new FlowLayout());
+        buttonGroup.setLayout(new FlowLayout(FlowLayout.CENTER));
         JButton nameSearch = new JButton("Search by name");
         nameSearch.addMouseListener(new MyMouseListener(nameSearch));
         nameSearch.setBackground(orange);
@@ -257,45 +309,429 @@ class UserInterface {
         buttonGroup.add(defSearch);
         buttonGroup.add(clearSearch);
         buttonGroup.setBackground(transparent);
-        group1.add(heading);
-        group1.add(searchBar);
-        group1.add(buttonGroup);
-        this.mainCnt.add(group1, gbc);
+        
+        group2.add(searchBar);
+        group2.add(buttonGroup);
+        group2.setBackground(Color.WHITE);
+        searchCard.add(group2, gbc);
         
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 1;
-        gbc.gridheight = 8;
         gbc.weightx = 1;
         gbc.weighty = 0.8;
+        gbc.anchor = GridBagConstraints.NORTHEAST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+        // group 3 - search results
+        JPanel group3 = new JPanel();
+        group3.setLayout(new FlowLayout(FlowLayout.LEFT));
+        group3.setBackground(transparent);
+        searchCard.add(group3, gbc);
+        
+        return searchCard;
+    }
+    
+    JPanel generateHistoryCard() {
+        Font h1 = new Font("Arial", Font.BOLD, 42);
+        Font h2 = new Font("Arial", Font.BOLD, 30);
+        Font h3 = new Font("Arial", Font.BOLD, 20);
+        Font p = new Font("Arial", Font.PLAIN, 16);
+        
+        // define colors
+        Color blue = Color.decode("#020122");
+        Color orange = Color.decode("#FC9E4F");
+        Color transparent = new Color(0, 0, 0, 0);
+        
+        JPanel historyCard = new JPanel();
+        historyCard.setBackground(Color.WHITE);
+        historyCard.setLayout(new GridBagLayout());
+        historyCard.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.weightx = 1;
+        gbc.weighty = 0.1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        // define group 1 - Headings
+        JPanel group1 = new JPanel();
+        group1.setLayout(new BoxLayout(group1, BoxLayout.Y_AXIS));
+        group1.setBackground(transparent);
+        JLabel heading1 = new JLabel("TM Slang Words Dictionary");
+        heading1.setFont(h1);
+        JLabel heading2 = new JLabel("History");
+        heading2.setFont(h2);
+        group1.add(heading1);
+        group1.add(heading2);
+        historyCard.add(group1, gbc);
+        
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.weightx = 1;
+        gbc.weighty = 0.9;
+        // define group 2 - History
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.NORTHEAST;
         JPanel group2 = new JPanel();
-        group2.setLayout(new FlowLayout(FlowLayout.LEFT));
+        group2.setLayout(new BoxLayout(group2, BoxLayout.Y_AXIS));
         group2.setBackground(transparent);
-        this.mainCnt.add(group2, gbc);
+        // get list of history words
+        
+        for(String s: Dictionary.history) {
+            JPanel card = new JPanel();
+            JLabel word = new JLabel(s);
+            word.setBackground(transparent);
+            word.setForeground(Color.BLACK);
+            card.add(word);
+            card.setBackground(Color.decode("#E1F0C4"));
+            card.setPreferredSize(new Dimension(100, 30));
+            group2.add(card);
+        }
+        historyCard.add(group2, gbc);
+        
+        return historyCard;
+    }
+    
+    JPanel generateAddNewCard() {
+        Font h1 = new Font("Arial", Font.BOLD, 42);
+        Font h2 = new Font("Arial", Font.BOLD, 30);
+        Font h3 = new Font("Arial", Font.BOLD, 20);
+        Font p = new Font("Arial", Font.PLAIN, 16);
+        
+        // define colors
+        Color blue = Color.decode("#020122");
+        Color orange = Color.decode("#FC9E4F");
+        Color transparent = new Color(0, 0, 0, 0);
+        
+        JPanel addNewCard = new JPanel();
+        addNewCard.setBackground(Color.WHITE);
+        addNewCard.setLayout(new GridBagLayout());
+        addNewCard.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.weightx = 1;
+        gbc.weighty = 0.1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        // define group 1 - Headings
+        JPanel group1 = new JPanel();
+        group1.setLayout(new BoxLayout(group1, BoxLayout.Y_AXIS));
+        group1.setBackground(transparent);
+        JLabel heading1 = new JLabel("TM Slang Words Dictionary");
+        heading1.setFont(h1);
+        JLabel heading2 = new JLabel("Add new slang word");
+        heading2.setFont(h2);
+        group1.add(heading1);
+        group1.add(heading2);
+        addNewCard.add(group1, gbc);
+        
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.weightx = 1;
+        gbc.weighty = 0.2;
+        gbc.anchor = GridBagConstraints.NORTHEAST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        // define group 2 - Add new form
+        JPanel group2 = new JPanel();
+        group2.setLayout(new BoxLayout(group2, BoxLayout.Y_AXIS));
+        group2.setBackground(transparent);
+        
+        JPanel group2_nameField = new JPanel();
+        group2_nameField.setLayout(new FlowLayout());
+        group2_nameField.setBackground(Color.WHITE);
+        JLabel name = new JLabel("Enter name: ");
+        JTextField nameField = new JTextField();
+        nameField.setPreferredSize(new Dimension(300, 30));
+        group2_nameField.add(name);
+        group2_nameField.add(nameField);
+        group2.add(group2_nameField);
+        
+        JPanel group2_defField = new JPanel();
+        group2_defField.setLayout(new FlowLayout());
+        group2_defField.setBackground(Color.WHITE);
+        JLabel definition = new JLabel("Enter definition: ");
+        JTextField defField = new JTextField();
+        defField.setPreferredSize(new Dimension(300, 30));
+        group2_defField.add(definition);
+        group2_defField.add(defField);
+        group2.add(group2_defField);
+        
+        JButton addBtn = new JButton("Add slang");
+        addBtn.setSize(50, 30);
+        group2.add(addBtn);
+        
+        addNewCard.add(group2, gbc);       
+        return addNewCard;
+    }
+    
+    JPanel generateDailySlangWords() {   
+        Font h1 = new Font("Arial", Font.BOLD, 42);
+        Font h2 = new Font("Arial", Font.BOLD, 30);
+        Font h3 = new Font("Arial", Font.BOLD, 20);
+        Font p = new Font("Arial", Font.PLAIN, 16);
+        
+        // define colors
+        Color blue = Color.decode("#020122");
+        Color orange = Color.decode("#FC9E4F");
+        Color transparent = new Color(0, 0, 0, 0);
+        
+        JPanel dailySlangsCard = new JPanel();
+        dailySlangsCard.setBackground(Color.WHITE);
+        dailySlangsCard.setLayout(new GridBagLayout());
+        dailySlangsCard.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.weightx = 1;
+        gbc.weighty = 0.1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        // define group 1 - Headings
+        JPanel group1 = new JPanel();
+        group1.setLayout(new BoxLayout(group1, BoxLayout.Y_AXIS));
+        group1.setBackground(transparent);
+        JLabel heading1 = new JLabel("TM Slang Words Dictionary");
+        heading1.setFont(h1);
+        JLabel heading2 = new JLabel("Daily Slang Card");
+        heading2.setFont(h2);
+        group1.add(heading1);
+        group1.add(heading2);
+        dailySlangsCard.add(group1, gbc);
+        
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.weightx = 1;
+        gbc.weighty = 0.9;
+        gbc.anchor = GridBagConstraints.CENTER;
+        // define group 2 - History
+        JPanel group2 = new JPanel();
+        group2.setLayout(new BoxLayout(group2, BoxLayout.Y_AXIS));
+        group2.setPreferredSize(new Dimension(300, 300));
+        group2.setBackground(Color.decode("#E1F0C4"));
+        group2.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        ArrayList<Word> dailySlang = Dictionary.getDailySlang();
+        // get list of history words
+        JLabel word = new JLabel(dailySlang.get(0).getName());
+        word.setForeground(Color.BLACK);
+        word.setFont(h1);
+        word.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel def = new JLabel(dailySlang.get(0).getDefinition());
+        def.setForeground(Color.BLACK);
+        def.setFont(h2);
+        def.setAlignmentX(Component.CENTER_ALIGNMENT);
+        group2.add(word);
+        group2.add(def);
+        dailySlangsCard.add(group2, gbc);
+        
+        return dailySlangsCard;
+    }
+    
+    JPanel generateGuessDefinition() {
+        Font h1 = new Font("Arial", Font.BOLD, 42);
+        Font h2 = new Font("Arial", Font.BOLD, 30);
+        Font h3 = new Font("Arial", Font.BOLD, 20);
+        Font p = new Font("Arial", Font.PLAIN, 16);
+        
+        // define colors
+        Color blue = Color.decode("#020122");
+        Color orange = Color.decode("#FC9E4F");
+        Color transparent = new Color(0, 0, 0, 0);
+        
+        JPanel guessDefCard = new JPanel();
+        guessDefCard.setBackground(Color.WHITE);
+        guessDefCard.setLayout(new GridBagLayout());
+        guessDefCard.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.weightx = 1;
+        gbc.weighty = 0.1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        // define group 1 - Headings
+        JPanel group1 = new JPanel();
+        group1.setLayout(new BoxLayout(group1, BoxLayout.Y_AXIS));
+        group1.setBackground(transparent);
+        JLabel heading1 = new JLabel("TM Slang Words Dictionary");
+        heading1.setFont(h1);
+        JLabel heading2 = new JLabel("Guess the definition");
+        heading2.setFont(h2);
+        group1.add(heading1);
+        group1.add(heading2);
+        guessDefCard.add(group1, gbc);
+        
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.weightx = 1;
+        gbc.weighty = 0.9;
+//        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.CENTER;
+        // define group 2 - Guess area
+        JPanel group2 = new JPanel();
+        group2.setLayout(new BoxLayout(group2, BoxLayout.Y_AXIS));
+        group2.setBackground(Color.decode("#E1F0C4"));
+        group2.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        // get list of words
+        ArrayList<Word> list = Dictionary.getCollectionOfRandSlangs();
+        Word ans = list.get((int)Math.floor(Math.random() * list.size()));
+        // display list of words
+        JLabel def = new JLabel(ans.getDefinition());
+        def.setFont(h1);
+        group2.add(def);
+        JPanel group2_choices = new JPanel();
+        group2_choices.setLayout(new GridLayout(2, 2, 10, 10));
+        group2_choices.setBackground(transparent);
+        for(Word w: list) {
+            JPanel wordCard = new JPanel();
+            JLabel wordName = new JLabel(w.getName());
+            wordCard.add(wordName);
+            wordCard.setBackground(orange);
+            group2_choices.add(wordCard);
+        }
+        group2.add(group2_choices);
+        guessDefCard.add(group2, gbc);
+        return guessDefCard;
+    }
+    
+    JPanel generateGuessSlangWords() {
+        Font h1 = new Font("Arial", Font.BOLD, 42);
+        Font h2 = new Font("Arial", Font.BOLD, 30);
+        Font h3 = new Font("Arial", Font.BOLD, 20);
+        Font p = new Font("Arial", Font.PLAIN, 16);
+        
+        // define colors
+        Color blue = Color.decode("#020122");
+        Color orange = Color.decode("#FC9E4F");
+        Color transparent = new Color(0, 0, 0, 0);
+        
+        JPanel guessWordCard = new JPanel();
+        guessWordCard.setBackground(Color.WHITE);
+        guessWordCard.setLayout(new GridBagLayout());
+        guessWordCard.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.weightx = 1;
+        gbc.weighty = 0.1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        // define group 1 - Headings
+        JPanel group1 = new JPanel();
+        group1.setLayout(new BoxLayout(group1, BoxLayout.Y_AXIS));
+        group1.setBackground(transparent);
+        JLabel heading1 = new JLabel("TM Slang Words Dictionary");
+        heading1.setFont(h1);
+        JLabel heading2 = new JLabel("Guess the slang word");
+        heading2.setFont(h2);
+        group1.add(heading1);
+        group1.add(heading2);
+        guessWordCard.add(group1, gbc);
+        
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.weightx = 1;
+        gbc.weighty = 0.9;
+        gbc.anchor = GridBagConstraints.CENTER;
+        // define group 2 - Guess area
+//        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JPanel group2 = new JPanel();
+        group2.setBackground(Color.decode("#E1F0C4"));
+        group2.setLayout(new BoxLayout(group2, BoxLayout.Y_AXIS));
+        // get list of words
+        ArrayList<Word> list = Dictionary.getCollectionOfRandSlangs();
+        Word ans = list.get((int)Math.floor(Math.random() * list.size()));
+        // display list of words
+        JLabel word = new JLabel(ans.getName());
+        word.setFont(h1);
+        group2.add(word);
+        group2.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        JPanel group2_choices = new JPanel();
+        group2_choices.setBackground(transparent);
+        group2_choices.setLayout(new GridLayout(2, 2, 10, 10));
+        for(Word w: list) {
+            JPanel wordCard = new JPanel();
+            wordCard.setBackground(orange);
+            JLabel wordDef = new JLabel(w.getDefinition());
+            wordDef.setFont(h2);
+            wordCard.add(wordDef);
+            group2_choices.add(wordCard);
+        }
+        group2.add(group2_choices);
+        guessWordCard.add(group2, gbc);
+        return guessWordCard;
+    }
+    
+    void initMainCnt() {
+        // define fonts
+        Font h1 = new Font("Arial", Font.BOLD, 42);
+        Font h2 = new Font("Arial", Font.BOLD, 30);
+        Font h3 = new Font("Arial", Font.BOLD, 20);
+        Font p = new Font("Arial", Font.PLAIN, 16);
+        
+        // define colors
+        Color blue = Color.decode("#020122");
+        Color orange = Color.decode("#FC9E4F");
+        Color transparent = new Color(0, 0, 0, 0);
+        
+        // container for card layout
+        this.mainCnt = new JPanel();
+        CardLayout cl = new CardLayout();
+        this.mainCnt.setLayout(cl);
+        
+        // adding cards
+        this.mainCnt.add(this.generateSearchCard(), "searchCard");
+        this.mainCnt.add(this.generateHistoryCard(), "historyCard");
+        this.mainCnt.add(this.generateAddNewCard(), "addNewCard");
+        this.mainCnt.add(this.generateDailySlangWords(), "dailySlangCard");
+        this.mainCnt.add(this.generateGuessSlangWords(), "guessSlangCard");
+        this.mainCnt.add(this.generateGuessDefinition(), "guessDefCard");
+        
+        cl.show(this.mainCnt, "searchCard");
     }
     
     void display() {
-        // initialize components
-        this.initSidebar();
-        this.initMainCnt();
-        
-        // create frame
-        JFrame f = new JFrame("TM Dictionary");
-        Container pane = f.getContentPane();
-        pane.setLayout(new BorderLayout());
-        
-        
-        // add jpanels to frame
-        pane.add(this.sidebar, BorderLayout.WEST);
-        pane.add(this.mainCnt, BorderLayout.CENTER);
-        
-        f.setSize(800, 400);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        f.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            // initialize components
+            this.initSidebar();
+            this.initMainCnt();
+
+            // create frame
+            JFrame f = new JFrame("TM Dictionary");
+            Container pane = f.getContentPane();
+            pane.setLayout(new BorderLayout());
+
+            // add jpanels to frame
+            pane.add(this.sidebar, BorderLayout.WEST);
+            pane.add(this.mainCnt, BorderLayout.CENTER);
+
+            f.setSize(800, 400);
+            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            f.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            f.setVisible(true);
+        });   
     }
 }
 
@@ -305,7 +741,7 @@ public class Project1 {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        
+        Dictionary.init();
         UserInterface UI = new UserInterface();
         UI.display();
     }
