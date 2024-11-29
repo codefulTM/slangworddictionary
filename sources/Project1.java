@@ -45,6 +45,7 @@ class MyMouseListener implements MouseListener {
 class UserInterface {
     private JPanel sidebar = null;
     private JPanel mainCnt = null;
+    private HashMap<String, JPanel> cards = null;
     
     JPanel createWordCards(Word w) {
         Font h2 = new Font("Arial", Font.BOLD, 30);
@@ -103,13 +104,19 @@ class UserInterface {
         group1.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         // search area
         JPanel searchArea = new JPanel();
+        searchArea.addMouseListener(new MouseAdapter() {
+            @Override public void mouseClicked(MouseEvent e) {
+                CardLayout l = (CardLayout)mainCnt.getLayout();
+                l.show(mainCnt, "searchCard");
+            }
+        });
         searchArea.addMouseListener(new MyMouseListener(searchArea));
         searchArea.setLayout(new BoxLayout(searchArea, BoxLayout.Y_AXIS));
         searchArea.setBackground(transparent);
         JLabel s1 = new JLabel("Search");
         s1.setFont(h3);
         s1.setForeground(Color.BLACK);
-        JLabel s2 = new JLabel("<html>Click here to view your search history.</html>");
+        JLabel s2 = new JLabel("<html>Click here to search.</html>");
         s2.setFont(p);
         s2.setForeground(Color.BLACK);
         searchArea.add(s1);
@@ -118,6 +125,12 @@ class UserInterface {
         group1.add(Box.createRigidArea(new Dimension(0, 30)));
         // history area
         JPanel historyArea = new JPanel();
+        historyArea.addMouseListener(new MouseAdapter() {
+            @Override public void mouseClicked(MouseEvent e) {
+                CardLayout l = (CardLayout)mainCnt.getLayout();
+                l.show(mainCnt, "historyCard");
+            }
+        });
         historyArea.addMouseListener(new MyMouseListener(historyArea));
         historyArea.setLayout(new BoxLayout(historyArea, BoxLayout.Y_AXIS));
         historyArea.setBackground(transparent);
@@ -133,6 +146,12 @@ class UserInterface {
         group1.add(Box.createRigidArea(new Dimension(0, 30)));
         // add new area
         JPanel addNewArea = new JPanel();
+        addNewArea.addMouseListener(new MouseAdapter() {
+            @Override public void mouseClicked(MouseEvent e) {
+                CardLayout l = (CardLayout)mainCnt.getLayout();
+                l.show(mainCnt, "addNewCard");
+            }
+        });
         addNewArea.addMouseListener(new MyMouseListener(addNewArea));
         addNewArea.setLayout(new BoxLayout(addNewArea, BoxLayout.Y_AXIS));
         addNewArea.setBackground(transparent);
@@ -148,6 +167,12 @@ class UserInterface {
         group1.add(Box.createRigidArea(new Dimension(0, 30)));
         // add slang word of the day area
         JPanel swotdArea = new JPanel();
+        swotdArea.addMouseListener(new MouseAdapter() {
+            @Override public void mouseClicked(MouseEvent e) {
+                CardLayout l = (CardLayout)mainCnt.getLayout();
+                l.show(mainCnt, "dailySlangCard");
+            }
+        });
         swotdArea.addMouseListener(new MyMouseListener(swotdArea));
         swotdArea.setLayout(new BoxLayout(swotdArea, BoxLayout.Y_AXIS));
         swotdArea.setBackground(transparent);
@@ -173,6 +198,12 @@ class UserInterface {
         group2.setBackground(orange);
         // guess the slang word area
         JPanel gtswArea = new JPanel();
+        gtswArea.addMouseListener(new MouseAdapter() {
+            @Override public void mouseClicked(MouseEvent e) {
+                CardLayout l = (CardLayout)mainCnt.getLayout();
+                l.show(mainCnt, "guessSlangCard");
+            }
+        });
         gtswArea.addMouseListener(new MyMouseListener(gtswArea));
         gtswArea.setLayout(new BoxLayout(gtswArea, BoxLayout.Y_AXIS));
         gtswArea.setBackground(transparent);
@@ -188,6 +219,12 @@ class UserInterface {
         group2.add(Box.createRigidArea(new Dimension(0, 30)));
         // guess the definition area
         JPanel gtdArea = new JPanel();
+        gtdArea.addMouseListener(new MouseAdapter() {
+            @Override public void mouseClicked(MouseEvent e) {
+                CardLayout l = (CardLayout)mainCnt.getLayout();
+                l.show(mainCnt, "guessDefCard");
+            }
+        });
         gtdArea.addMouseListener(new MyMouseListener(gtdArea));
         gtdArea.setLayout(new BoxLayout(gtdArea, BoxLayout.Y_AXIS));
         gtdArea.setBackground(transparent);
@@ -264,7 +301,7 @@ class UserInterface {
         heading1.setFont(h1);
         group1.add(heading1);
         JLabel heading2 = new JLabel("Search");
-        heading2.setFont(h1);
+        heading2.setFont(h2);
         group1.add(heading2);
         searchCard.add(group1, gbc);
         
@@ -309,7 +346,6 @@ class UserInterface {
         buttonGroup.add(defSearch);
         buttonGroup.add(clearSearch);
         buttonGroup.setBackground(transparent);
-        
         group2.add(searchBar);
         group2.add(buttonGroup);
         group2.setBackground(Color.WHITE);
@@ -328,6 +364,8 @@ class UserInterface {
         group3.setLayout(new FlowLayout(FlowLayout.LEFT));
         group3.setBackground(transparent);
         searchCard.add(group3, gbc);
+        // add search actions
+        
         
         return searchCard;
     }
@@ -439,7 +477,7 @@ class UserInterface {
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         gbc.weightx = 1;
-        gbc.weighty = 0.2;
+        gbc.weighty = 0.9;
         gbc.anchor = GridBagConstraints.NORTHEAST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         // define group 2 - Add new form
@@ -451,6 +489,7 @@ class UserInterface {
         group2_nameField.setLayout(new FlowLayout());
         group2_nameField.setBackground(Color.WHITE);
         JLabel name = new JLabel("Enter name: ");
+        name.setFont(p);
         JTextField nameField = new JTextField();
         nameField.setPreferredSize(new Dimension(300, 30));
         group2_nameField.add(name);
@@ -461,6 +500,7 @@ class UserInterface {
         group2_defField.setLayout(new FlowLayout());
         group2_defField.setBackground(Color.WHITE);
         JLabel definition = new JLabel("Enter definition: ");
+        definition.setFont(p);
         JTextField defField = new JTextField();
         defField.setPreferredSize(new Dimension(300, 30));
         group2_defField.add(definition);
@@ -468,7 +508,9 @@ class UserInterface {
         group2.add(group2_defField);
         
         JButton addBtn = new JButton("Add slang");
-        addBtn.setSize(50, 30);
+        addBtn.setFont(p);
+        addBtn.setPreferredSize(new Dimension(50, 30));
+        addBtn.setBackground(orange);
         group2.add(addBtn);
         
         addNewCard.add(group2, gbc);       
@@ -517,22 +559,23 @@ class UserInterface {
         gbc.gridwidth = 1;
         gbc.weightx = 1;
         gbc.weighty = 0.9;
-        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.NORTH;
         // define group 2 - History
         JPanel group2 = new JPanel();
         group2.setLayout(new BoxLayout(group2, BoxLayout.Y_AXIS));
-        group2.setPreferredSize(new Dimension(300, 300));
+        group2.setPreferredSize(new Dimension(300, 100));
         group2.setBackground(Color.decode("#E1F0C4"));
         group2.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         ArrayList<Word> dailySlang = Dictionary.getDailySlang();
         // get list of history words
         JLabel word = new JLabel(dailySlang.get(0).getName());
         word.setForeground(Color.BLACK);
-        word.setFont(h1);
+        word.setFont(h3);
         word.setAlignmentX(Component.CENTER_ALIGNMENT);
         JLabel def = new JLabel(dailySlang.get(0).getDefinition());
         def.setForeground(Color.BLACK);
-        def.setFont(h2);
+        def.setFont(p);
         def.setAlignmentX(Component.CENTER_ALIGNMENT);
         group2.add(word);
         group2.add(def);
@@ -565,6 +608,7 @@ class UserInterface {
         gbc.weightx = 1;
         gbc.weighty = 0.1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
+//        gbc.anchor = GridBagConstraints.NORTH;
         // define group 1 - Headings
         JPanel group1 = new JPanel();
         group1.setLayout(new BoxLayout(group1, BoxLayout.Y_AXIS));
@@ -583,8 +627,8 @@ class UserInterface {
         gbc.gridwidth = 1;
         gbc.weightx = 1;
         gbc.weighty = 0.9;
-//        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.NORTH;
         // define group 2 - Guess area
         JPanel group2 = new JPanel();
         group2.setLayout(new BoxLayout(group2, BoxLayout.Y_AXIS));
@@ -595,7 +639,8 @@ class UserInterface {
         Word ans = list.get((int)Math.floor(Math.random() * list.size()));
         // display list of words
         JLabel def = new JLabel(ans.getDefinition());
-        def.setFont(h1);
+        def.setFont(p);
+        def.setAlignmentX(Component.CENTER_ALIGNMENT);
         group2.add(def);
         JPanel group2_choices = new JPanel();
         group2_choices.setLayout(new GridLayout(2, 2, 10, 10));
@@ -603,6 +648,7 @@ class UserInterface {
         for(Word w: list) {
             JPanel wordCard = new JPanel();
             JLabel wordName = new JLabel(w.getName());
+            wordName.setFont(p);
             wordCard.add(wordName);
             wordCard.setBackground(orange);
             group2_choices.add(wordCard);
@@ -654,7 +700,8 @@ class UserInterface {
         gbc.gridwidth = 1;
         gbc.weightx = 1;
         gbc.weighty = 0.9;
-        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.NORTH;
         // define group 2 - Guess area
 //        gbc.fill = GridBagConstraints.HORIZONTAL;
         JPanel group2 = new JPanel();
@@ -665,7 +712,8 @@ class UserInterface {
         Word ans = list.get((int)Math.floor(Math.random() * list.size()));
         // display list of words
         JLabel word = new JLabel(ans.getName());
-        word.setFont(h1);
+        word.setFont(p);
+        word.setAlignmentX(Component.CENTER_ALIGNMENT);
         group2.add(word);
         group2.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         JPanel group2_choices = new JPanel();
@@ -675,7 +723,7 @@ class UserInterface {
             JPanel wordCard = new JPanel();
             wordCard.setBackground(orange);
             JLabel wordDef = new JLabel(w.getDefinition());
-            wordDef.setFont(h2);
+            wordDef.setFont(p);
             wordCard.add(wordDef);
             group2_choices.add(wordCard);
         }
@@ -701,13 +749,22 @@ class UserInterface {
         CardLayout cl = new CardLayout();
         this.mainCnt.setLayout(cl);
         
+        // creating cards
+        this.cards = new HashMap<>();
+        cards.put("searchCard", this.generateSearchCard());
+        cards.put("historyCard", this.generateHistoryCard());
+        cards.put("addNewCard", this.generateAddNewCard());
+        cards.put("dailySlangCard", this.generateDailySlangWords());
+        cards.put("guessSlangCard", this.generateGuessSlangWords());
+        cards.put("guessDefCard", this.generateGuessDefinition());
+        
         // adding cards
-        this.mainCnt.add(this.generateSearchCard(), "searchCard");
-        this.mainCnt.add(this.generateHistoryCard(), "historyCard");
-        this.mainCnt.add(this.generateAddNewCard(), "addNewCard");
-        this.mainCnt.add(this.generateDailySlangWords(), "dailySlangCard");
-        this.mainCnt.add(this.generateGuessSlangWords(), "guessSlangCard");
-        this.mainCnt.add(this.generateGuessDefinition(), "guessDefCard");
+        this.mainCnt.add(cards.get("searchCard"), "searchCard");
+        this.mainCnt.add(cards.get("historyCard"), "historyCard");
+        this.mainCnt.add(cards.get("addNewCard"), "addNewCard");
+        this.mainCnt.add(cards.get("dailySlangCard"), "dailySlangCard");
+        this.mainCnt.add(cards.get("guessSlangCard"), "guessSlangCard");
+        this.mainCnt.add(cards.get("guessDefCard"), "guessDefCard");
         
         cl.show(this.mainCnt, "searchCard");
     }
