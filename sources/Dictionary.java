@@ -34,8 +34,11 @@ public class Dictionary {
                 ArrayList<String> defs;
                 while((line = br.readLine()) != null) {
                     String[] substrs = line.split("[`|]");
-                    name = substrs[0];
+                    name = substrs[0].toLowerCase();
                     defs = new ArrayList<>(Arrays.asList(Arrays.copyOfRange(substrs, 1, substrs.length)));
+                    for(String s: defs) {
+                        s = s.toLowerCase();
+                    }
                     Dictionary.slanglist.put(name, defs);
                 }
                 br.close();
@@ -60,17 +63,17 @@ public class Dictionary {
         if(Dictionary.slanglist == null) {
             return null;
         }
-        ArrayList<String> deflist = Dictionary.slanglist.get(name);
+        ArrayList<String> deflist = Dictionary.slanglist.get(name.toLowerCase());
         if(deflist == null) {
             return null; // the slang is not found
         }
         // add to history
-        Dictionary.history.add(name);
+        Dictionary.history.add(name.toLowerCase());
         Dictionary.saveHistory();
         // generate word list
         ArrayList<Word> foundlist = new ArrayList<>();
         for(int i = 0; i < deflist.size(); i++) {
-            foundlist.add(new Word(name, deflist.get(i)));
+            foundlist.add(new Word(name.toLowerCase(), deflist.get(i)));
         }
         return foundlist;
     }
@@ -83,11 +86,14 @@ public class Dictionary {
         for(var e: Dictionary.slanglist.entrySet()) {
             ArrayList<String> defSet = e.getValue();
             for(int i = 0; i < defSet.size(); i++) {
-                if(defSet.get(i).contains(definition)) {
+                if(defSet.get(i).contains(definition.toLowerCase())) {
                     namelist.add(e.getKey());
                     break;
                 }
             }
+        }
+        if(namelist.size() == 0) {
+            return null;
         }
         ArrayList<Word> foundlist = new ArrayList<>();
         for(int i = 0; i < namelist.size(); i++) {
@@ -99,13 +105,13 @@ public class Dictionary {
     }
     
     public static boolean addSlangWord(String name, String definition) {
-        if(Dictionary.slanglist.containsKey(name)) {
+        if(Dictionary.slanglist.containsKey(name.toLowerCase())) {
             return false;
         }
         else {
             ArrayList<String> deflist = new ArrayList<>();
-            deflist.add(definition);
-            Dictionary.slanglist.put(name, deflist);
+            deflist.add(definition.toLowerCase());
+            Dictionary.slanglist.put(name.toLowerCase(), deflist);
             Dictionary.saveSlanglist();
             return true;
         }
@@ -113,20 +119,21 @@ public class Dictionary {
     
     public static void overwriteSlangWord(String name, String definition) {
         ArrayList<String> deflist = new ArrayList<>();
-        deflist.add(definition);
-        Dictionary.slanglist.put(name, deflist);
+        deflist.add(definition.toLowerCase());
+        Dictionary.slanglist.put(name.toLowerCase(), deflist);
         Dictionary.saveSlanglist();
     }
     
     public static void addDuplicateSlangWord(String name, String definition) {
-        Dictionary.slanglist.get(name).add(definition);
+        Dictionary.slanglist.get(name.toLowerCase()).add(definition.toLowerCase());
         Dictionary.saveSlanglist();
     }
     
     public static boolean removeByName(String name) {
-        if(Dictionary.slanglist.containsKey(name)) {
-            Dictionary.slanglist.remove(name);
-            Dictionary.history.remove(name);
+        String modifiedName = name.toLowerCase();
+        if(Dictionary.slanglist.containsKey(modifiedName)) {
+            Dictionary.slanglist.remove(modifiedName);
+            Dictionary.history.remove(modifiedName);
             Dictionary.saveProgress();
             return true;
         }
@@ -194,13 +201,16 @@ public class Dictionary {
             ArrayList<String> defs;
             while((line = br.readLine()) != null) {
                 String[] substrs = line.split("[`|]");
-                name = substrs[0];
-                defs = (ArrayList<String>)Arrays.asList(Arrays.copyOfRange(substrs, 1, substrs.length));
+                name = substrs[0].toLowerCase();
+                defs = new ArrayList<>(Arrays.asList(Arrays.copyOfRange(substrs, 1, substrs.length)));
+                for(String s: defs) {
+                    s = s.toLowerCase();
+                }
                 Dictionary.slanglist.put(name, defs);
             }
             br.close();
-            // clear the history 
-            Dictionary.history = new HashSet<>();
+            // regenerate history
+            Dictionary.history.clear();
             // save progress
             Dictionary.saveProgress();
         }
@@ -209,23 +219,38 @@ public class Dictionary {
         }
     }
     
-    public static void editSlangWord(Word oldW, Word newW) {
+    public static boolean editSlangWord(Word oldW, Word newW) {
         ArrayList<String> deflist = Dictionary.slanglist.get(oldW.getName());
+        if(deflist == null) {
+            System.out.println("Can't find slang list being editted");
+            return false;
+        }
+        boolean foundOldWord = false;
         for(int i = 0; i < deflist.size(); i++) {
-            if(deflist.get(i).compareTo(oldW.getDefinition()) == 0) {
+            if(deflist.get(i).compareTo(oldW.getDefinition().toLowerCase()) == 0) {
+                foundOldWord = true;
                 deflist.remove(i);
+                if(deflist.size() == 0) {
+                    Dictionary.slanglist.remove(oldW.getName());
+                }
                 break;
             }
         }
-        boolean flag = Dictionary.addSlangWord(newW.getName(), newW.getDefinition());
-        if(!flag) {
-            Dictionary.addDuplicateSlangWord(newW.getName(), newW.getDefinition());
+        if(!foundOldWord) {
+            System.out.println("Can't find slang list being editted");
+            return false;
+        }
+        boolean res = Dictionary.addSlangWord(newW.getName(), newW.getDefinition());
+        if(!res) {
+            Dictionary.addDuplicateSlangWord(oldW.getName(), newW.getDefinition());
         }
         Dictionary.saveSlanglist();
+        return true;
     }
     
     public static void saveHistory() {
         try {
+            System.out.println("Current history size: " + Dictionary.history.size());
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("src/project/data/history.bin"));
             oos.writeObject(Dictionary.history);
             oos.close();

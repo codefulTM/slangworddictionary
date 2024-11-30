@@ -22,11 +22,11 @@ class MyMouseListener implements MouseListener {
     }
     
     public void mouseEntered(MouseEvent e) {
-        this.component.setBackground(Color.decode("#FFBE88"));
+        component.setBackground(Color.decode("#FFBE88"));
     }
     
     public void mouseExited(MouseEvent e) {
-        this.component.setBackground(Color.decode("#FC9E4F"));
+        component.setBackground(Color.decode("#FC9E4F"));
     }
     
     public void mouseClicked(MouseEvent e) {
@@ -45,6 +45,7 @@ class MyMouseListener implements MouseListener {
 class UserInterface {
     private JPanel sidebar = null;
     private JPanel mainCnt = null;
+    private JFrame frame = null;
     private HashMap<String, JPanel> cards = null;
     
     JPanel createWordCards(Word w) {
@@ -251,6 +252,13 @@ class UserInterface {
         // Reset Area
         JPanel resetArea = new JPanel();
         resetArea.addMouseListener(new MyMouseListener(resetArea));
+        resetArea.addMouseListener(new MouseAdapter() {
+            @Override public void mouseClicked(MouseEvent e) {
+                Dictionary.resetDictionary();
+                JOptionPane.showMessageDialog(frame, "Reset successfully", "Notification", JOptionPane.INFORMATION_MESSAGE);
+                resetHistoryCard();
+            } 
+        });
         resetArea.setLayout(new BoxLayout(resetArea, BoxLayout.Y_AXIS));
         resetArea.setBackground(transparent);
         JLabel r1 = new JLabel("Reset slang list");
@@ -358,16 +366,278 @@ class UserInterface {
         gbc.weightx = 1;
         gbc.weighty = 0.8;
         gbc.anchor = GridBagConstraints.NORTHEAST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.BOTH;
         // group 3 - search results
         JPanel group3 = new JPanel();
-        group3.setLayout(new FlowLayout(FlowLayout.LEFT));
-        group3.setBackground(transparent);
-        searchCard.add(group3, gbc);
+        group3.setLayout(new BoxLayout(group3, BoxLayout.Y_AXIS));
+        JScrollPane scrollPane = new JScrollPane(group3);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        searchCard.add(scrollPane, gbc);
         // add search actions
-        
+        nameSearch.addActionListener(new ActionListener() {
+            @Override public void actionPerformed(ActionEvent e) {
+                group3.removeAll();
+                String txt = searchBar.getText();
+                ArrayList<Word> res = Dictionary.findByName(txt);                
+                if(res == null) {
+                    JOptionPane.showMessageDialog(frame, "Can't find the word you're searching for", "Notification", 0);
+                    return;
+                }
+                for(Word w: res) {
+                    JPanel components = new JPanel();
+                    components.setLayout(new BoxLayout(components, BoxLayout.Y_AXIS));
+                    
+                    // define word area
+                    JPanel wordArea = new JPanel();
+                    wordArea.setLayout(new BoxLayout(wordArea, BoxLayout.X_AXIS));
+                    wordArea.setBackground(Color.decode("#E1F0C4"));
+                    wordArea.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                    JLabel word = new JLabel(w.getName());
+                    word.setForeground(Color.BLACK);
+                    word.setFont(h3);
+                    JLabel def = new JLabel(w.getDefinition());
+                    def.setForeground(Color.BLACK);
+                    def.setFont(p);
+                    wordArea.add(word);
+                    wordArea.add(Box.createHorizontalGlue());
+                    wordArea.add(def);
+                    wordArea.add(Box.createHorizontalGlue());
+                    components.add(wordArea);
+                    
+                    // define button area
+                    JPanel bttnArea = new JPanel();
+                    JButton editBttn = new JButton("Edit");
+                    editBttn.setFont(p);
+                    editBttn.setBackground(orange);
+                    editBttn.setForeground(Color.BLACK);
+                    editBttn.addMouseListener(new MyMouseListener(editBttn));
+                    editBttn.addActionListener(new ActionListener() {
+                        @Override public void actionPerformed(ActionEvent e) {
+                            Word oldW = new Word(word.getText(), def.getText());
+                            JDialog dialog = new JDialog(frame, "Edit word");
+                            dialog.setLayout(new GridLayout(3, 2, 10, 10));
+                            dialog.setTitle("Edit the word information");
+                            JLabel nameLabel = new JLabel("Name: ");
+                            nameLabel.setFont(p);
+                            nameLabel.setForeground(Color.BLACK);
+                            dialog.add(nameLabel);
+                            JTextField nameField = new JTextField(oldW.getName());
+                            nameField.setPreferredSize(new Dimension(100, 30));
+                            nameField.setFont(p);
+                            nameField.setForeground(Color.BLACK);
+                            dialog.add(nameField);
+                            
+                            JLabel defLabel = new JLabel("Definition: ");
+                            defLabel.setFont(p);
+                            defLabel.setForeground(Color.BLACK);
+                            dialog.add(defLabel);
+                            JTextField defField = new JTextField(oldW.getDefinition());
+                            defField.setPreferredSize(new Dimension(100, 30));
+                            defField.setFont(p);
+                            defField.setForeground(Color.BLACK);
+                            dialog.add(defField);
+                            
+                            JButton bttn1 = new JButton("Save");
+                            bttn1.setBackground(orange);
+                            bttn1.setFont(p);
+                            bttn1.setForeground(Color.BLACK);
+                            bttn1.addMouseListener(new MyMouseListener(bttn1));
+                            bttn1.addActionListener(new ActionListener() {
+                                @Override public void actionPerformed(ActionEvent e) {
+                                    Word newW = new Word(nameField.getText(), defField.getText());
+                                    Dictionary.editSlangWord(oldW, newW);
+                                    JOptionPane.showMessageDialog(frame, "Editted successfully", "Notification", JOptionPane.INFORMATION_MESSAGE);
+                                    group3.remove(components);
+                                    group3.revalidate();
+                                    group3.repaint();
+                                }
+                            });
+                            dialog.add(bttn1);
+                            
+                            JButton bttn2 = new JButton("Cancel");
+                            bttn2.setBackground(orange);
+                            bttn2.setFont(p);
+                            bttn2.setForeground(Color.BLACK);
+                            bttn2.addMouseListener(new MyMouseListener(bttn2));
+                            bttn2.addActionListener(new ActionListener() {
+                                @Override public void actionPerformed(ActionEvent e) {
+                                    dialog.dispose();
+                                }
+                            });
+                            dialog.add(bttn2);
+                            dialog.pack();
+                            dialog.setLocationRelativeTo(frame);
+                            dialog.setVisible(true);
+                        }
+                    });
+                    
+                    JButton removeBttn = new JButton("Remove");
+                    removeBttn.setFont(p);
+                    removeBttn.setBackground(orange);
+                    removeBttn.setForeground(Color.BLACK);
+                    removeBttn.addMouseListener(new MyMouseListener(editBttn));
+                    removeBttn.addActionListener(new ActionListener() {
+                        @Override public void actionPerformed(ActionEvent e) {
+                            int opt = JOptionPane.showConfirmDialog(frame, "Are you sure you want to remove this word?", "Notification", JOptionPane.YES_NO_OPTION);
+                            if(opt == JOptionPane.YES_OPTION) {
+                                Dictionary.removeByName(word.getText());
+                                JOptionPane.showMessageDialog(frame, "Removed successfully", "Notification", JOptionPane.INFORMATION_MESSAGE);
+                                group3.remove(components);
+                                group3.revalidate();
+                                group3.repaint();
+                            }
+                        }
+                    });
+                    bttnArea.add(editBttn);
+                    bttnArea.add(removeBttn);
+                    components.add(bttnArea);
+                    group3.add(components);
+                    group3.revalidate();
+                    group3.repaint();
+                }
+            }
+        });
+        defSearch.addActionListener(new ActionListener() {
+            @Override public void actionPerformed(ActionEvent e) {
+                group3.removeAll();
+                String txt = searchBar.getText();
+                ArrayList<Word> res = Dictionary.findByDefinition(txt);
+                if(res == null) {
+                    JOptionPane.showMessageDialog(frame, "Can't find the word you're searching for", "Notification", 0);
+                    return;
+                }
+                for(Word w: res) {
+                    JPanel components = new JPanel();
+                    components.setLayout(new BoxLayout(components, BoxLayout.Y_AXIS));
+                    
+                    // define word area
+                    JPanel wordArea = new JPanel();
+                    wordArea.setLayout(new BoxLayout(wordArea, BoxLayout.X_AXIS));
+                    wordArea.setBackground(Color.decode("#E1F0C4"));
+                    wordArea.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                    JLabel word = new JLabel(w.getName());
+                    word.setForeground(Color.BLACK);
+                    word.setFont(h3);
+                    JLabel def = new JLabel(w.getDefinition());
+                    def.setForeground(Color.BLACK);
+                    def.setFont(p);
+                    wordArea.add(word);
+                    wordArea.add(Box.createHorizontalGlue());
+                    wordArea.add(def);
+                    wordArea.add(Box.createHorizontalGlue());
+                    components.add(wordArea);
+                    
+                    // define button area
+                    JPanel bttnArea = new JPanel();
+                    JButton editBttn = new JButton("Edit");
+                    editBttn.setFont(p);
+                    editBttn.setBackground(orange);
+                    editBttn.setForeground(Color.BLACK);
+                    editBttn.addMouseListener(new MyMouseListener(editBttn));
+                    editBttn.addActionListener(new ActionListener() {
+                        @Override public void actionPerformed(ActionEvent e) {
+                            Word oldW = new Word(word.getText(), def.getText());
+                            JDialog dialog = new JDialog(frame, "Edit word");
+                            dialog.setLayout(new GridLayout(3, 2, 10, 10));
+                            dialog.setTitle("Edit the word information");
+                            JLabel nameLabel = new JLabel("Name: ");
+                            nameLabel.setFont(p);
+                            nameLabel.setForeground(Color.BLACK);
+                            dialog.add(nameLabel);
+                            JTextField nameField = new JTextField(oldW.getName());
+                            nameField.setPreferredSize(new Dimension(100, 30));
+                            nameField.setFont(p);
+                            nameField.setForeground(Color.BLACK);
+                            dialog.add(nameField);
+                            
+                            JLabel defLabel = new JLabel("Definition: ");
+                            defLabel.setFont(p);
+                            defLabel.setForeground(Color.BLACK);
+                            dialog.add(defLabel);
+                            JTextField defField = new JTextField(oldW.getDefinition());
+                            defField.setPreferredSize(new Dimension(100, 30));
+                            defField.setFont(p);
+                            defField.setForeground(Color.BLACK);
+                            dialog.add(defField);
+                            
+                            JButton bttn1 = new JButton("Save");
+                            bttn1.setBackground(orange);
+                            bttn1.setFont(p);
+                            bttn1.setForeground(Color.BLACK);
+                            bttn1.addMouseListener(new MyMouseListener(bttn1));
+                            bttn1.addActionListener(new ActionListener() {
+                                @Override public void actionPerformed(ActionEvent e) {
+                                    Word newW = new Word(nameField.getText(), defField.getText());
+                                    Dictionary.editSlangWord(oldW, newW);
+                                    JOptionPane.showMessageDialog(frame, "Editted successfully", "Notification", JOptionPane.INFORMATION_MESSAGE);
+                                    group3.remove(components);
+                                    group3.revalidate();
+                                    group3.repaint();
+                                }
+                            });
+                            dialog.add(bttn1);
+                            
+                            JButton bttn2 = new JButton("Cancel");
+                            bttn2.setBackground(orange);
+                            bttn2.setFont(p);
+                            bttn2.setForeground(Color.BLACK);
+                            bttn2.addMouseListener(new MyMouseListener(bttn2));
+                            bttn2.addActionListener(new ActionListener() {
+                                @Override public void actionPerformed(ActionEvent e) {
+                                    dialog.dispose();
+                                }
+                            });
+                            dialog.add(bttn2);
+                            dialog.pack();
+                            dialog.setLocationRelativeTo(frame);
+                            dialog.setVisible(true);
+                        }
+                    });
+                    
+                    JButton removeBttn = new JButton("Remove");
+                    removeBttn.setFont(p);
+                    removeBttn.setBackground(orange);
+                    removeBttn.setForeground(Color.BLACK);
+                    removeBttn.addMouseListener(new MyMouseListener(editBttn));
+                    removeBttn.addActionListener(new ActionListener() {
+                        @Override public void actionPerformed(ActionEvent e) {
+                            int opt = JOptionPane.showConfirmDialog(frame, "Are you sure you want to remove this word?", "Notification", JOptionPane.YES_NO_OPTION);
+                            if(opt == JOptionPane.YES_OPTION) {
+                                Dictionary.removeByName(word.getText());
+                                JOptionPane.showMessageDialog(frame, "Removed successfully", "Notification", JOptionPane.INFORMATION_MESSAGE);
+                                group3.remove(components);
+                                group3.revalidate();
+                                group3.repaint();
+                            }
+                        }
+                    });
+                    bttnArea.add(editBttn);
+                    bttnArea.add(removeBttn);
+                    components.add(bttnArea);
+                    group3.add(components);
+                    group3.revalidate();
+                    group3.repaint();
+                }
+            }
+        });
+        clearSearch.addActionListener(new ActionListener() {
+            @Override public void actionPerformed(ActionEvent e) {
+                group3.removeAll();
+                group3.revalidate();
+                group3.repaint();
+                searchBar.setText("");
+            }
+        });
         
         return searchCard;
+    }
+
+    void resetHistoryCard() {
+        this.mainCnt.remove(cards.get("historyCard"));
+        this.cards.put("historyCard", this.generateHistoryCard());
+        this.mainCnt.add(cards.get("historyCard"), "historyCard");
+        this.mainCnt.revalidate();
+        this.mainCnt.repaint();
     }
     
     JPanel generateHistoryCard() {
@@ -429,6 +699,7 @@ class UserInterface {
             card.setBackground(Color.decode("#E1F0C4"));
             card.setPreferredSize(new Dimension(100, 30));
             group2.add(card);
+            
         }
         historyCard.add(group2, gbc);
         
@@ -511,6 +782,31 @@ class UserInterface {
         addBtn.setFont(p);
         addBtn.setPreferredSize(new Dimension(50, 30));
         addBtn.setBackground(orange);
+        addBtn.addActionListener(new ActionListener() {
+            @Override public void actionPerformed(ActionEvent e) {
+                String name = nameField.getText();
+                String def = defField.getText();
+                if(name.equals("") || def.equals("")) {
+                    JOptionPane.showMessageDialog(mainCnt, "Missing slang name or definition!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                else {
+                    boolean addRes = Dictionary.addSlangWord(name, def);
+                    if(!addRes) {
+                        // overwrite or add duplicate
+                        int res = JOptionPane.showConfirmDialog(mainCnt, "Choose YES to overwrite, or NO to duplicate the slang.", "Notification", 0, JOptionPane.YES_NO_OPTION);
+                        if(res == JOptionPane.YES_OPTION) {
+                            Dictionary.overwriteSlangWord(name, def);
+                        }
+                        else {
+                            Dictionary.addDuplicateSlangWord(name, def);
+                        }
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(mainCnt, "Added successfully!", "Notification", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            }
+        });
         group2.add(addBtn);
         
         addNewCard.add(group2, gbc);       
@@ -561,14 +857,14 @@ class UserInterface {
         gbc.weighty = 0.9;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.NORTH;
-        // define group 2 - History
+        // define group 2 - daily slang
         JPanel group2 = new JPanel();
         group2.setLayout(new BoxLayout(group2, BoxLayout.Y_AXIS));
         group2.setPreferredSize(new Dimension(300, 100));
         group2.setBackground(Color.decode("#E1F0C4"));
         group2.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         ArrayList<Word> dailySlang = Dictionary.getDailySlang();
-        // get list of history words
+        // get daily slang word
         JLabel word = new JLabel(dailySlang.get(0).getName());
         word.setForeground(Color.BLACK);
         word.setFont(h3);
@@ -608,7 +904,6 @@ class UserInterface {
         gbc.weightx = 1;
         gbc.weighty = 0.1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-//        gbc.anchor = GridBagConstraints.NORTH;
         // define group 1 - Headings
         JPanel group1 = new JPanel();
         group1.setLayout(new BoxLayout(group1, BoxLayout.Y_AXIS));
@@ -647,15 +942,37 @@ class UserInterface {
         group2_choices.setBackground(transparent);
         for(Word w: list) {
             JPanel wordCard = new JPanel();
+            wordCard.setBackground(orange);
             JLabel wordName = new JLabel(w.getName());
             wordName.setFont(p);
             wordCard.add(wordName);
-            wordCard.setBackground(orange);
+            wordCard.addMouseListener(new MyMouseListener(wordCard));
+            wordCard.addMouseListener(new MouseAdapter() {
+                @Override public void mouseClicked(MouseEvent e) {
+                    if(w.getName().equals(ans.getName())) {
+                        JOptionPane.showMessageDialog(frame, "Congrats on choosing the correct answer!", "Notification", 0);
+                        resetGuessDefinition();
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(frame, "Sorry, wrong answer :/", "Notification", 0);
+                    }
+                }
+            });
             group2_choices.add(wordCard);
         }
         group2.add(group2_choices);
         guessDefCard.add(group2, gbc);
         return guessDefCard;
+    }
+    
+    void resetGuessDefinition() {
+        this.mainCnt.remove(cards.get("guessDefCard"));
+        this.cards.put("guessDefCard", this.generateGuessDefinition());
+        this.mainCnt.add(cards.get("guessDefCard"), "guessDefCard");
+        CardLayout c = (CardLayout)this.mainCnt.getLayout();
+        c.show(this.mainCnt, "guessDefCard");
+        this.mainCnt.revalidate();
+        this.mainCnt.repaint();
     }
     
     JPanel generateGuessSlangWords() {
@@ -707,6 +1024,7 @@ class UserInterface {
         JPanel group2 = new JPanel();
         group2.setBackground(Color.decode("#E1F0C4"));
         group2.setLayout(new BoxLayout(group2, BoxLayout.Y_AXIS));
+        group2.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         // get list of words
         ArrayList<Word> list = Dictionary.getCollectionOfRandSlangs();
         Word ans = list.get((int)Math.floor(Math.random() * list.size()));
@@ -715,7 +1033,6 @@ class UserInterface {
         word.setFont(p);
         word.setAlignmentX(Component.CENTER_ALIGNMENT);
         group2.add(word);
-        group2.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         JPanel group2_choices = new JPanel();
         group2_choices.setBackground(transparent);
         group2_choices.setLayout(new GridLayout(2, 2, 10, 10));
@@ -725,11 +1042,33 @@ class UserInterface {
             JLabel wordDef = new JLabel(w.getDefinition());
             wordDef.setFont(p);
             wordCard.add(wordDef);
+            wordCard.addMouseListener(new MyMouseListener(wordCard));
+            wordCard.addMouseListener(new MouseAdapter() {
+                @Override public void mouseClicked(MouseEvent e) {
+                    if(w.getDefinition().equals(ans.getDefinition())) {
+                        JOptionPane.showMessageDialog(frame, "Congrats on choosing the correct answer!", "Notification", 0);
+                        resetGuessSlangWords();
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(frame, "Sorry, wrong answer :/", "Notification", 0);
+                    }
+                }
+            });
             group2_choices.add(wordCard);
         }
         group2.add(group2_choices);
         guessWordCard.add(group2, gbc);
         return guessWordCard;
+    }
+    
+    void resetGuessSlangWords() {
+        this.mainCnt.remove(cards.get("guessSlangCard"));
+        this.cards.put("guessSlangCard", this.generateGuessDefinition());
+        this.mainCnt.add(cards.get("guessSlangCard"), "guessSlangCard");
+        CardLayout c = (CardLayout)this.mainCnt.getLayout();
+        c.show(this.mainCnt, "guessSlangCard");
+        this.mainCnt.revalidate();
+        this.mainCnt.repaint();
     }
     
     void initMainCnt() {
@@ -776,18 +1115,18 @@ class UserInterface {
             this.initMainCnt();
 
             // create frame
-            JFrame f = new JFrame("TM Dictionary");
-            Container pane = f.getContentPane();
+            this.frame = new JFrame("TM Dictionary");
+            Container pane = this.frame.getContentPane();
             pane.setLayout(new BorderLayout());
 
             // add jpanels to frame
             pane.add(this.sidebar, BorderLayout.WEST);
             pane.add(this.mainCnt, BorderLayout.CENTER);
 
-            f.setSize(800, 400);
-            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            f.setExtendedState(JFrame.MAXIMIZED_BOTH);
-            f.setVisible(true);
+            this.frame.setSize(800, 400);
+            this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            this.frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            this.frame.setVisible(true);
         });   
     }
 }
