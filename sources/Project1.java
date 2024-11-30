@@ -388,7 +388,7 @@ class UserInterface {
             public void actionPerformed(ActionEvent e) {
                 group3.removeAll();
                 String txt = searchBar.getText();
-                ArrayList<Word> res = Dictionary.findByName(txt);
+                ArrayList<Word> res = Dictionary.findByName(txt, true);
                 resetHistoryCard();
                 if (res == null) {
                     JOptionPane.showMessageDialog(frame, "Can't find the word you're searching for", "Notification", 0);
@@ -818,7 +818,7 @@ class UserInterface {
                     boolean addRes = Dictionary.addSlangWord(name, def);
                     if (!addRes) {
                         // overwrite or add duplicate
-                        int res = JOptionPane.showConfirmDialog(frame, "Choose YES to overwrite, or NO to duplicate the slang.", "Notification", 0, JOptionPane.YES_NO_OPTION);
+                        int res = JOptionPane.showConfirmDialog(frame, "Choose YES to overwrite, or NO to duplicate the slang.", "Already Existing Slang", 0, JOptionPane.YES_NO_OPTION);
                         if (res == JOptionPane.YES_OPTION) {
                             Dictionary.overwriteSlangWord(name, def);
                         } else {
@@ -974,7 +974,7 @@ class UserInterface {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (w.getName().equals(ans.getName())) {
-                        JOptionPane.showMessageDialog(frame, "Congrats on choosing the correct answer!", "Notification", 0);
+                        JOptionPane.showMessageDialog(frame, "Congrats on choosing the correct answer!", "Notification", JOptionPane.INFORMATION_MESSAGE);
                         resetGuessDefinition();
                     } else {
                         JOptionPane.showMessageDialog(frame, "Sorry, wrong answer :/", "Notification", 0);
@@ -1070,7 +1070,7 @@ class UserInterface {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (w.getDefinition().equals(ans.getDefinition())) {
-                        JOptionPane.showMessageDialog(frame, "Congrats on choosing the correct answer!", "Notification", 0);
+                        JOptionPane.showMessageDialog(frame, "Congrats on choosing the correct answer!", "Notification", JOptionPane.INFORMATION_MESSAGE);
                         resetGuessSlangWords();
                     } else {
                         JOptionPane.showMessageDialog(frame, "Sorry, wrong answer :/", "Notification", 0);
@@ -1086,7 +1086,7 @@ class UserInterface {
 
     void resetGuessSlangWords() {
         this.mainCnt.remove(cards.get("guessSlangCard"));
-        this.cards.put("guessSlangCard", this.generateGuessDefinition());
+        this.cards.put("guessSlangCard", this.generateGuessSlangWords());
         this.mainCnt.add(cards.get("guessSlangCard"), "guessSlangCard");
         CardLayout c = (CardLayout) this.mainCnt.getLayout();
         c.show(this.mainCnt, "guessSlangCard");

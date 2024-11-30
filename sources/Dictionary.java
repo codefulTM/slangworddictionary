@@ -59,8 +59,9 @@ public class Dictionary {
         }
     }
     
-    public static ArrayList<Word> findByName(String name) {
-        Dictionary.history.add(name.toLowerCase());
+    public static ArrayList<Word> findByName(String name, boolean doSaveHistory) {
+        if(doSaveHistory) 
+            Dictionary.history.add(name.toLowerCase());
         if(Dictionary.slanglist == null) {
             return null;
         }
@@ -80,6 +81,7 @@ public class Dictionary {
     
     public static ArrayList<Word> findByDefinition(String definition) {
         Dictionary.history.add(definition.toLowerCase());
+        Dictionary.saveHistory();
         if(Dictionary.slanglist == null) {
             return null;
         }
@@ -98,9 +100,8 @@ public class Dictionary {
         }
         ArrayList<Word> foundlist = new ArrayList<>();
         for(int i = 0; i < namelist.size(); i++) {
-            foundlist.addAll(Dictionary.findByName(namelist.get(i)));
+            foundlist.addAll(Dictionary.findByName(namelist.get(i), false));
         }
-        Dictionary.saveHistory();
         return foundlist;
     }
     
@@ -195,6 +196,7 @@ public class Dictionary {
     public static void resetDictionary() {
         try {
             // regenerate the slang list from slang.txt and write back to the binary file
+            Dictionary.slanglist.clear();
             BufferedReader br = new BufferedReader(new FileReader("src/project/data/slang.txt"));
             String line;
             String name;
