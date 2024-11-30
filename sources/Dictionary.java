@@ -60,6 +60,7 @@ public class Dictionary {
     }
     
     public static ArrayList<Word> findByName(String name) {
+        Dictionary.history.add(name.toLowerCase());
         if(Dictionary.slanglist == null) {
             return null;
         }
@@ -68,7 +69,6 @@ public class Dictionary {
             return null; // the slang is not found
         }
         // add to history
-        Dictionary.history.add(name.toLowerCase());
         Dictionary.saveHistory();
         // generate word list
         ArrayList<Word> foundlist = new ArrayList<>();
@@ -79,6 +79,7 @@ public class Dictionary {
     }
     
     public static ArrayList<Word> findByDefinition(String definition) {
+        Dictionary.history.add(definition.toLowerCase());
         if(Dictionary.slanglist == null) {
             return null;
         }
@@ -97,7 +98,6 @@ public class Dictionary {
         }
         ArrayList<Word> foundlist = new ArrayList<>();
         for(int i = 0; i < namelist.size(); i++) {
-            Dictionary.history.add(namelist.get(i));
             foundlist.addAll(Dictionary.findByName(namelist.get(i)));
         }
         Dictionary.saveHistory();
@@ -133,7 +133,7 @@ public class Dictionary {
         String modifiedName = name.toLowerCase();
         if(Dictionary.slanglist.containsKey(modifiedName)) {
             Dictionary.slanglist.remove(modifiedName);
-            Dictionary.history.remove(modifiedName);
+            // Dictionary.history.remove(modifiedName);
             Dictionary.saveProgress();
             return true;
         }
@@ -250,7 +250,6 @@ public class Dictionary {
     
     public static void saveHistory() {
         try {
-            System.out.println("Current history size: " + Dictionary.history.size());
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("src/project/data/history.bin"));
             oos.writeObject(Dictionary.history);
             oos.close();

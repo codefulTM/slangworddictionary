@@ -15,30 +15,31 @@ import javax.swing.*;
 import javax.swing.border.Border;
 
 class MyMouseListener implements MouseListener {
+
     private JComponent component = null;
-    
+
     MyMouseListener(JComponent component) {
         this.component = component;
     }
-    
+
     public void mouseEntered(MouseEvent e) {
         component.setBackground(Color.decode("#FFBE88"));
     }
-    
+
     public void mouseExited(MouseEvent e) {
         component.setBackground(Color.decode("#FC9E4F"));
     }
-    
+
     public void mouseClicked(MouseEvent e) {
-        
+
     }
-    
+
     public void mouseReleased(MouseEvent e) {
-        
+
     }
-    
+
     public void mousePressed(MouseEvent e) {
-        
+
     }
 }
 
@@ -47,11 +48,11 @@ class UserInterface {
     private JPanel mainCnt = null;
     private JFrame frame = null;
     private HashMap<String, JPanel> cards = null;
-    
+
     JPanel createWordCards(Word w) {
         Font h2 = new Font("Arial", Font.BOLD, 30);
         Font h3 = new Font("Arial", Font.BOLD, 20);
-        
+
         JPanel card = new JPanel();
         card.setPreferredSize(new Dimension(100, 200));
         card.setBackground(Color.decode("#E1F0C4"));
@@ -63,22 +64,22 @@ class UserInterface {
         JLabel desc = new JLabel(w.getDefinition());
         desc.setFont(h3);
         card.add(desc, BorderLayout.CENTER);
-        
+
         return card;
     }
-    
+
     void initSidebar() {
         // define fonts
         Font h1 = new Font("Arial", Font.BOLD, 42);
         Font h2 = new Font("Arial", Font.BOLD, 30);
         Font h3 = new Font("Arial", Font.BOLD, 20);
         Font p = new Font("Arial", Font.PLAIN, 16);
-        
+
         // define colors
         Color blue = Color.decode("#020122");
         Color orange = Color.decode("#FC9E4F");
         Color transparent = new Color(0, 0, 0, 0);
-        
+
         this.sidebar = new JPanel();
         this.sidebar.setBackground(blue);
         this.sidebar.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -94,10 +95,10 @@ class UserInterface {
         heading2.setForeground(orange);
         root.add(heading1);
         root.add(heading2);
-        
+
         // add rigid area
         root.add(Box.createRigidArea(new Dimension(0, 30)));
-        
+
         // define group 1 - Basic functionalities
         JPanel group1 = new JPanel();
         group1.setLayout(new BoxLayout(group1, BoxLayout.Y_AXIS));
@@ -106,8 +107,9 @@ class UserInterface {
         // search area
         JPanel searchArea = new JPanel();
         searchArea.addMouseListener(new MouseAdapter() {
-            @Override public void mouseClicked(MouseEvent e) {
-                CardLayout l = (CardLayout)mainCnt.getLayout();
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                CardLayout l = (CardLayout) mainCnt.getLayout();
                 l.show(mainCnt, "searchCard");
             }
         });
@@ -127,8 +129,9 @@ class UserInterface {
         // history area
         JPanel historyArea = new JPanel();
         historyArea.addMouseListener(new MouseAdapter() {
-            @Override public void mouseClicked(MouseEvent e) {
-                CardLayout l = (CardLayout)mainCnt.getLayout();
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                CardLayout l = (CardLayout) mainCnt.getLayout();
                 l.show(mainCnt, "historyCard");
             }
         });
@@ -148,8 +151,9 @@ class UserInterface {
         // add new area
         JPanel addNewArea = new JPanel();
         addNewArea.addMouseListener(new MouseAdapter() {
-            @Override public void mouseClicked(MouseEvent e) {
-                CardLayout l = (CardLayout)mainCnt.getLayout();
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                CardLayout l = (CardLayout) mainCnt.getLayout();
                 l.show(mainCnt, "addNewCard");
             }
         });
@@ -169,8 +173,9 @@ class UserInterface {
         // add slang word of the day area
         JPanel swotdArea = new JPanel();
         swotdArea.addMouseListener(new MouseAdapter() {
-            @Override public void mouseClicked(MouseEvent e) {
-                CardLayout l = (CardLayout)mainCnt.getLayout();
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                CardLayout l = (CardLayout) mainCnt.getLayout();
                 l.show(mainCnt, "dailySlangCard");
             }
         });
@@ -188,10 +193,10 @@ class UserInterface {
         group1.add(swotdArea);
         // add group 1 to sidebar
         root.add(group1);
-        
+
         // add rigid area
         root.add(Box.createRigidArea(new Dimension(0, 20)));
-        
+
         // define group 2 - Guess-the-word Area
         JPanel group2 = new JPanel();
         group2.setLayout(new BoxLayout(group2, BoxLayout.Y_AXIS));
@@ -200,8 +205,9 @@ class UserInterface {
         // guess the slang word area
         JPanel gtswArea = new JPanel();
         gtswArea.addMouseListener(new MouseAdapter() {
-            @Override public void mouseClicked(MouseEvent e) {
-                CardLayout l = (CardLayout)mainCnt.getLayout();
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                CardLayout l = (CardLayout) mainCnt.getLayout();
                 l.show(mainCnt, "guessSlangCard");
             }
         });
@@ -221,8 +227,9 @@ class UserInterface {
         // guess the definition area
         JPanel gtdArea = new JPanel();
         gtdArea.addMouseListener(new MouseAdapter() {
-            @Override public void mouseClicked(MouseEvent e) {
-                CardLayout l = (CardLayout)mainCnt.getLayout();
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                CardLayout l = (CardLayout) mainCnt.getLayout();
                 l.show(mainCnt, "guessDefCard");
             }
         });
@@ -235,15 +242,15 @@ class UserInterface {
         JLabel gtd2 = new JLabel("<html>Try and guess the slang word using the definition</html>");
         gtd2.setFont(p);
         gtd2.setForeground(Color.BLACK);
-        gtdArea.add(gtd1);    
+        gtdArea.add(gtd1);
         gtdArea.add(gtd2);
         group2.add(gtdArea);
         // add group 2 to sidebar
         root.add(group2);
-        
+
         // add rigid area
         root.add(Box.createRigidArea(new Dimension(0, 20)));
-        
+
         // define group 3 - Reset Area
         JPanel group3 = new JPanel();
         group3.setLayout(new BoxLayout(group3, BoxLayout.Y_AXIS));
@@ -253,11 +260,12 @@ class UserInterface {
         JPanel resetArea = new JPanel();
         resetArea.addMouseListener(new MyMouseListener(resetArea));
         resetArea.addMouseListener(new MouseAdapter() {
-            @Override public void mouseClicked(MouseEvent e) {
+            @Override
+            public void mouseClicked(MouseEvent e) {
                 Dictionary.resetDictionary();
                 JOptionPane.showMessageDialog(frame, "Reset successfully", "Notification", JOptionPane.INFORMATION_MESSAGE);
                 resetHistoryCard();
-            } 
+            }
         });
         resetArea.setLayout(new BoxLayout(resetArea, BoxLayout.Y_AXIS));
         resetArea.setBackground(transparent);
@@ -273,22 +281,22 @@ class UserInterface {
         group3.add(Box.createRigidArea(new Dimension(0, 2)));
         // add group 3 to sidebar
         root.add(group3);
-        
+
         this.sidebar.add(root);
         this.sidebar.add(Box.createRigidArea(new Dimension(10, 0)));
     }
-    
+
     JPanel generateSearchCard() {
         Font h1 = new Font("Arial", Font.BOLD, 42);
         Font h2 = new Font("Arial", Font.BOLD, 30);
         Font h3 = new Font("Arial", Font.BOLD, 20);
         Font p = new Font("Arial", Font.PLAIN, 16);
-        
+
         // define colors
         Color blue = Color.decode("#020122");
         Color orange = Color.decode("#FC9E4F");
         Color transparent = new Color(0, 0, 0, 0);
-        
+
         JPanel searchCard = new JPanel();
         searchCard.setBackground(Color.WHITE);
         searchCard.setLayout(new GridBagLayout());
@@ -312,7 +320,7 @@ class UserInterface {
         heading2.setFont(h2);
         group1.add(heading2);
         searchCard.add(group1, gbc);
-        
+
         // define group 2 - Search area
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -336,19 +344,19 @@ class UserInterface {
         Border outline = BorderFactory.createLineBorder(Color.BLACK);
         Border b = BorderFactory.createCompoundBorder(outline, padding);
         nameSearch.setBorder(b);
-        nameSearch.setSize(30,15);
+        nameSearch.setSize(30, 15);
         nameSearch.setFont(h3);
         JButton defSearch = new JButton("Search by definition");
         defSearch.addMouseListener(new MyMouseListener(defSearch));
         defSearch.setBackground(orange);
         defSearch.setBorder(b);
-        defSearch.setSize(30,15);
+        defSearch.setSize(30, 15);
         defSearch.setFont(h3);
         JButton clearSearch = new JButton("Clear search");
         clearSearch.addMouseListener(new MyMouseListener(clearSearch));
         clearSearch.setBackground(orange);
         clearSearch.setBorder(b);
-        clearSearch.setSize(30,15);
+        clearSearch.setSize(30, 15);
         clearSearch.setFont(h3);
         buttonGroup.add(nameSearch);
         buttonGroup.add(defSearch);
@@ -358,7 +366,7 @@ class UserInterface {
         group2.add(buttonGroup);
         group2.setBackground(Color.WHITE);
         searchCard.add(group2, gbc);
-        
+
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -373,20 +381,23 @@ class UserInterface {
         JScrollPane scrollPane = new JScrollPane(group3);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         searchCard.add(scrollPane, gbc);
+        
         // add search actions
         nameSearch.addActionListener(new ActionListener() {
-            @Override public void actionPerformed(ActionEvent e) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 group3.removeAll();
                 String txt = searchBar.getText();
-                ArrayList<Word> res = Dictionary.findByName(txt);                
-                if(res == null) {
+                ArrayList<Word> res = Dictionary.findByName(txt);
+                resetHistoryCard();
+                if (res == null) {
                     JOptionPane.showMessageDialog(frame, "Can't find the word you're searching for", "Notification", 0);
                     return;
                 }
-                for(Word w: res) {
+                for (Word w : res) {
                     JPanel components = new JPanel();
                     components.setLayout(new BoxLayout(components, BoxLayout.Y_AXIS));
-                    
+
                     // define word area
                     JPanel wordArea = new JPanel();
                     wordArea.setLayout(new BoxLayout(wordArea, BoxLayout.X_AXIS));
@@ -403,7 +414,7 @@ class UserInterface {
                     wordArea.add(def);
                     wordArea.add(Box.createHorizontalGlue());
                     components.add(wordArea);
-                    
+
                     // define button area
                     JPanel bttnArea = new JPanel();
                     JButton editBttn = new JButton("Edit");
@@ -412,7 +423,8 @@ class UserInterface {
                     editBttn.setForeground(Color.BLACK);
                     editBttn.addMouseListener(new MyMouseListener(editBttn));
                     editBttn.addActionListener(new ActionListener() {
-                        @Override public void actionPerformed(ActionEvent e) {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
                             Word oldW = new Word(word.getText(), def.getText());
                             JDialog dialog = new JDialog(frame, "Edit word");
                             dialog.setLayout(new GridLayout(3, 2, 10, 10));
@@ -426,7 +438,7 @@ class UserInterface {
                             nameField.setFont(p);
                             nameField.setForeground(Color.BLACK);
                             dialog.add(nameField);
-                            
+
                             JLabel defLabel = new JLabel("Definition: ");
                             defLabel.setFont(p);
                             defLabel.setForeground(Color.BLACK);
@@ -436,14 +448,15 @@ class UserInterface {
                             defField.setFont(p);
                             defField.setForeground(Color.BLACK);
                             dialog.add(defField);
-                            
+
                             JButton bttn1 = new JButton("Save");
                             bttn1.setBackground(orange);
                             bttn1.setFont(p);
                             bttn1.setForeground(Color.BLACK);
                             bttn1.addMouseListener(new MyMouseListener(bttn1));
                             bttn1.addActionListener(new ActionListener() {
-                                @Override public void actionPerformed(ActionEvent e) {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
                                     Word newW = new Word(nameField.getText(), defField.getText());
                                     Dictionary.editSlangWord(oldW, newW);
                                     JOptionPane.showMessageDialog(frame, "Editted successfully", "Notification", JOptionPane.INFORMATION_MESSAGE);
@@ -453,14 +466,15 @@ class UserInterface {
                                 }
                             });
                             dialog.add(bttn1);
-                            
+
                             JButton bttn2 = new JButton("Cancel");
                             bttn2.setBackground(orange);
                             bttn2.setFont(p);
                             bttn2.setForeground(Color.BLACK);
                             bttn2.addMouseListener(new MyMouseListener(bttn2));
                             bttn2.addActionListener(new ActionListener() {
-                                @Override public void actionPerformed(ActionEvent e) {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
                                     dialog.dispose();
                                 }
                             });
@@ -470,16 +484,17 @@ class UserInterface {
                             dialog.setVisible(true);
                         }
                     });
-                    
+
                     JButton removeBttn = new JButton("Remove");
                     removeBttn.setFont(p);
                     removeBttn.setBackground(orange);
                     removeBttn.setForeground(Color.BLACK);
                     removeBttn.addMouseListener(new MyMouseListener(editBttn));
                     removeBttn.addActionListener(new ActionListener() {
-                        @Override public void actionPerformed(ActionEvent e) {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
                             int opt = JOptionPane.showConfirmDialog(frame, "Are you sure you want to remove this word?", "Notification", JOptionPane.YES_NO_OPTION);
-                            if(opt == JOptionPane.YES_OPTION) {
+                            if (opt == JOptionPane.YES_OPTION) {
                                 Dictionary.removeByName(word.getText());
                                 JOptionPane.showMessageDialog(frame, "Removed successfully", "Notification", JOptionPane.INFORMATION_MESSAGE);
                                 group3.remove(components);
@@ -498,18 +513,20 @@ class UserInterface {
             }
         });
         defSearch.addActionListener(new ActionListener() {
-            @Override public void actionPerformed(ActionEvent e) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 group3.removeAll();
                 String txt = searchBar.getText();
                 ArrayList<Word> res = Dictionary.findByDefinition(txt);
-                if(res == null) {
+                resetHistoryCard();
+                if (res == null) {
                     JOptionPane.showMessageDialog(frame, "Can't find the word you're searching for", "Notification", 0);
                     return;
                 }
-                for(Word w: res) {
+                for (Word w : res) {
                     JPanel components = new JPanel();
                     components.setLayout(new BoxLayout(components, BoxLayout.Y_AXIS));
-                    
+
                     // define word area
                     JPanel wordArea = new JPanel();
                     wordArea.setLayout(new BoxLayout(wordArea, BoxLayout.X_AXIS));
@@ -526,7 +543,7 @@ class UserInterface {
                     wordArea.add(def);
                     wordArea.add(Box.createHorizontalGlue());
                     components.add(wordArea);
-                    
+
                     // define button area
                     JPanel bttnArea = new JPanel();
                     JButton editBttn = new JButton("Edit");
@@ -535,7 +552,8 @@ class UserInterface {
                     editBttn.setForeground(Color.BLACK);
                     editBttn.addMouseListener(new MyMouseListener(editBttn));
                     editBttn.addActionListener(new ActionListener() {
-                        @Override public void actionPerformed(ActionEvent e) {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
                             Word oldW = new Word(word.getText(), def.getText());
                             JDialog dialog = new JDialog(frame, "Edit word");
                             dialog.setLayout(new GridLayout(3, 2, 10, 10));
@@ -549,7 +567,7 @@ class UserInterface {
                             nameField.setFont(p);
                             nameField.setForeground(Color.BLACK);
                             dialog.add(nameField);
-                            
+
                             JLabel defLabel = new JLabel("Definition: ");
                             defLabel.setFont(p);
                             defLabel.setForeground(Color.BLACK);
@@ -559,14 +577,15 @@ class UserInterface {
                             defField.setFont(p);
                             defField.setForeground(Color.BLACK);
                             dialog.add(defField);
-                            
+
                             JButton bttn1 = new JButton("Save");
                             bttn1.setBackground(orange);
                             bttn1.setFont(p);
                             bttn1.setForeground(Color.BLACK);
                             bttn1.addMouseListener(new MyMouseListener(bttn1));
                             bttn1.addActionListener(new ActionListener() {
-                                @Override public void actionPerformed(ActionEvent e) {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
                                     Word newW = new Word(nameField.getText(), defField.getText());
                                     Dictionary.editSlangWord(oldW, newW);
                                     JOptionPane.showMessageDialog(frame, "Editted successfully", "Notification", JOptionPane.INFORMATION_MESSAGE);
@@ -576,14 +595,15 @@ class UserInterface {
                                 }
                             });
                             dialog.add(bttn1);
-                            
+
                             JButton bttn2 = new JButton("Cancel");
                             bttn2.setBackground(orange);
                             bttn2.setFont(p);
                             bttn2.setForeground(Color.BLACK);
                             bttn2.addMouseListener(new MyMouseListener(bttn2));
                             bttn2.addActionListener(new ActionListener() {
-                                @Override public void actionPerformed(ActionEvent e) {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
                                     dialog.dispose();
                                 }
                             });
@@ -593,16 +613,17 @@ class UserInterface {
                             dialog.setVisible(true);
                         }
                     });
-                    
+
                     JButton removeBttn = new JButton("Remove");
                     removeBttn.setFont(p);
                     removeBttn.setBackground(orange);
                     removeBttn.setForeground(Color.BLACK);
                     removeBttn.addMouseListener(new MyMouseListener(editBttn));
                     removeBttn.addActionListener(new ActionListener() {
-                        @Override public void actionPerformed(ActionEvent e) {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
                             int opt = JOptionPane.showConfirmDialog(frame, "Are you sure you want to remove this word?", "Notification", JOptionPane.YES_NO_OPTION);
-                            if(opt == JOptionPane.YES_OPTION) {
+                            if (opt == JOptionPane.YES_OPTION) {
                                 Dictionary.removeByName(word.getText());
                                 JOptionPane.showMessageDialog(frame, "Removed successfully", "Notification", JOptionPane.INFORMATION_MESSAGE);
                                 group3.remove(components);
@@ -621,14 +642,15 @@ class UserInterface {
             }
         });
         clearSearch.addActionListener(new ActionListener() {
-            @Override public void actionPerformed(ActionEvent e) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 group3.removeAll();
                 group3.revalidate();
                 group3.repaint();
                 searchBar.setText("");
             }
         });
-        
+
         return searchCard;
     }
 
@@ -639,23 +661,23 @@ class UserInterface {
         this.mainCnt.revalidate();
         this.mainCnt.repaint();
     }
-    
+
     JPanel generateHistoryCard() {
         Font h1 = new Font("Arial", Font.BOLD, 42);
         Font h2 = new Font("Arial", Font.BOLD, 30);
         Font h3 = new Font("Arial", Font.BOLD, 20);
         Font p = new Font("Arial", Font.PLAIN, 16);
-        
+
         // define colors
         Color blue = Color.decode("#020122");
         Color orange = Color.decode("#FC9E4F");
         Color transparent = new Color(0, 0, 0, 0);
-        
+
         JPanel historyCard = new JPanel();
         historyCard.setBackground(Color.WHITE);
         historyCard.setLayout(new GridBagLayout());
         historyCard.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-        
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -675,53 +697,56 @@ class UserInterface {
         group1.add(heading1);
         group1.add(heading2);
         historyCard.add(group1, gbc);
-        
+
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
         gbc.weightx = 1;
         gbc.weighty = 0.9;
-        // define group 2 - History
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.BOTH;
         gbc.anchor = GridBagConstraints.NORTHEAST;
+        // define group 2 - History
         JPanel group2 = new JPanel();
         group2.setLayout(new BoxLayout(group2, BoxLayout.Y_AXIS));
         group2.setBackground(transparent);
-        // get list of history words
-        
-        for(String s: Dictionary.history) {
+        JScrollPane scrollPane = new JScrollPane(group2);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        for (String s : Dictionary.history) {
             JPanel card = new JPanel();
+            card.setLayout(new BoxLayout(card, BoxLayout.X_AXIS));
             JLabel word = new JLabel(s);
             word.setBackground(transparent);
             word.setForeground(Color.BLACK);
+            card.add(Box.createHorizontalGlue());
             card.add(word);
+            card.add(Box.createHorizontalGlue());
             card.setBackground(Color.decode("#E1F0C4"));
-            card.setPreferredSize(new Dimension(100, 30));
+            card.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK), BorderFactory.createEmptyBorder(10, 10, 10, 10)));
             group2.add(card);
-            
         }
-        historyCard.add(group2, gbc);
-        
+        group2.add(Box.createVerticalGlue());
+        historyCard.add(scrollPane, gbc);
+
         return historyCard;
     }
-    
+
     JPanel generateAddNewCard() {
         Font h1 = new Font("Arial", Font.BOLD, 42);
         Font h2 = new Font("Arial", Font.BOLD, 30);
         Font h3 = new Font("Arial", Font.BOLD, 20);
         Font p = new Font("Arial", Font.PLAIN, 16);
-        
+
         // define colors
         Color blue = Color.decode("#020122");
         Color orange = Color.decode("#FC9E4F");
         Color transparent = new Color(0, 0, 0, 0);
-        
+
         JPanel addNewCard = new JPanel();
         addNewCard.setBackground(Color.WHITE);
         addNewCard.setLayout(new GridBagLayout());
         addNewCard.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-        
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -741,7 +766,7 @@ class UserInterface {
         group1.add(heading1);
         group1.add(heading2);
         addNewCard.add(group1, gbc);
-        
+
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -755,7 +780,7 @@ class UserInterface {
         JPanel group2 = new JPanel();
         group2.setLayout(new BoxLayout(group2, BoxLayout.Y_AXIS));
         group2.setBackground(transparent);
-        
+
         JPanel group2_nameField = new JPanel();
         group2_nameField.setLayout(new FlowLayout());
         group2_nameField.setBackground(Color.WHITE);
@@ -766,7 +791,7 @@ class UserInterface {
         group2_nameField.add(name);
         group2_nameField.add(nameField);
         group2.add(group2_nameField);
-        
+
         JPanel group2_defField = new JPanel();
         group2_defField.setLayout(new FlowLayout());
         group2_defField.setBackground(Color.WHITE);
@@ -777,58 +802,56 @@ class UserInterface {
         group2_defField.add(definition);
         group2_defField.add(defField);
         group2.add(group2_defField);
-        
+
         JButton addBtn = new JButton("Add slang");
         addBtn.setFont(p);
         addBtn.setPreferredSize(new Dimension(50, 30));
         addBtn.setBackground(orange);
         addBtn.addActionListener(new ActionListener() {
-            @Override public void actionPerformed(ActionEvent e) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 String name = nameField.getText();
                 String def = defField.getText();
-                if(name.equals("") || def.equals("")) {
-                    JOptionPane.showMessageDialog(mainCnt, "Missing slang name or definition!", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-                else {
+                if (name.equals("") || def.equals("")) {
+                    JOptionPane.showMessageDialog(frame, "Missing slang name or definition!", "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
                     boolean addRes = Dictionary.addSlangWord(name, def);
-                    if(!addRes) {
+                    if (!addRes) {
                         // overwrite or add duplicate
-                        int res = JOptionPane.showConfirmDialog(mainCnt, "Choose YES to overwrite, or NO to duplicate the slang.", "Notification", 0, JOptionPane.YES_NO_OPTION);
-                        if(res == JOptionPane.YES_OPTION) {
+                        int res = JOptionPane.showConfirmDialog(frame, "Choose YES to overwrite, or NO to duplicate the slang.", "Notification", 0, JOptionPane.YES_NO_OPTION);
+                        if (res == JOptionPane.YES_OPTION) {
                             Dictionary.overwriteSlangWord(name, def);
-                        }
-                        else {
+                        } else {
                             Dictionary.addDuplicateSlangWord(name, def);
                         }
-                    }
-                    else {
-                        JOptionPane.showMessageDialog(mainCnt, "Added successfully!", "Notification", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Added successfully!", "Notification", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
             }
         });
         group2.add(addBtn);
-        
-        addNewCard.add(group2, gbc);       
+
+        addNewCard.add(group2, gbc);
         return addNewCard;
     }
-    
-    JPanel generateDailySlangWords() {   
+
+    JPanel generateDailySlangWords() {
         Font h1 = new Font("Arial", Font.BOLD, 42);
         Font h2 = new Font("Arial", Font.BOLD, 30);
         Font h3 = new Font("Arial", Font.BOLD, 20);
         Font p = new Font("Arial", Font.PLAIN, 16);
-        
+
         // define colors
         Color blue = Color.decode("#020122");
         Color orange = Color.decode("#FC9E4F");
         Color transparent = new Color(0, 0, 0, 0);
-        
+
         JPanel dailySlangsCard = new JPanel();
         dailySlangsCard.setBackground(Color.WHITE);
         dailySlangsCard.setLayout(new GridBagLayout());
         dailySlangsCard.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-        
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -848,7 +871,7 @@ class UserInterface {
         group1.add(heading1);
         group1.add(heading2);
         dailySlangsCard.add(group1, gbc);
-        
+
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -876,26 +899,26 @@ class UserInterface {
         group2.add(word);
         group2.add(def);
         dailySlangsCard.add(group2, gbc);
-        
+
         return dailySlangsCard;
     }
-    
+
     JPanel generateGuessDefinition() {
         Font h1 = new Font("Arial", Font.BOLD, 42);
         Font h2 = new Font("Arial", Font.BOLD, 30);
         Font h3 = new Font("Arial", Font.BOLD, 20);
         Font p = new Font("Arial", Font.PLAIN, 16);
-        
+
         // define colors
         Color blue = Color.decode("#020122");
         Color orange = Color.decode("#FC9E4F");
         Color transparent = new Color(0, 0, 0, 0);
-        
+
         JPanel guessDefCard = new JPanel();
         guessDefCard.setBackground(Color.WHITE);
         guessDefCard.setLayout(new GridBagLayout());
         guessDefCard.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-        
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -915,7 +938,7 @@ class UserInterface {
         group1.add(heading1);
         group1.add(heading2);
         guessDefCard.add(group1, gbc);
-        
+
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -931,7 +954,7 @@ class UserInterface {
         group2.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         // get list of words
         ArrayList<Word> list = Dictionary.getCollectionOfRandSlangs();
-        Word ans = list.get((int)Math.floor(Math.random() * list.size()));
+        Word ans = list.get((int) Math.floor(Math.random() * list.size()));
         // display list of words
         JLabel def = new JLabel(ans.getDefinition());
         def.setFont(p);
@@ -940,7 +963,7 @@ class UserInterface {
         JPanel group2_choices = new JPanel();
         group2_choices.setLayout(new GridLayout(2, 2, 10, 10));
         group2_choices.setBackground(transparent);
-        for(Word w: list) {
+        for (Word w : list) {
             JPanel wordCard = new JPanel();
             wordCard.setBackground(orange);
             JLabel wordName = new JLabel(w.getName());
@@ -948,12 +971,12 @@ class UserInterface {
             wordCard.add(wordName);
             wordCard.addMouseListener(new MyMouseListener(wordCard));
             wordCard.addMouseListener(new MouseAdapter() {
-                @Override public void mouseClicked(MouseEvent e) {
-                    if(w.getName().equals(ans.getName())) {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (w.getName().equals(ans.getName())) {
                         JOptionPane.showMessageDialog(frame, "Congrats on choosing the correct answer!", "Notification", 0);
                         resetGuessDefinition();
-                    }
-                    else {
+                    } else {
                         JOptionPane.showMessageDialog(frame, "Sorry, wrong answer :/", "Notification", 0);
                     }
                 }
@@ -964,33 +987,33 @@ class UserInterface {
         guessDefCard.add(group2, gbc);
         return guessDefCard;
     }
-    
+
     void resetGuessDefinition() {
         this.mainCnt.remove(cards.get("guessDefCard"));
         this.cards.put("guessDefCard", this.generateGuessDefinition());
         this.mainCnt.add(cards.get("guessDefCard"), "guessDefCard");
-        CardLayout c = (CardLayout)this.mainCnt.getLayout();
+        CardLayout c = (CardLayout) this.mainCnt.getLayout();
         c.show(this.mainCnt, "guessDefCard");
         this.mainCnt.revalidate();
         this.mainCnt.repaint();
     }
-    
+
     JPanel generateGuessSlangWords() {
         Font h1 = new Font("Arial", Font.BOLD, 42);
         Font h2 = new Font("Arial", Font.BOLD, 30);
         Font h3 = new Font("Arial", Font.BOLD, 20);
         Font p = new Font("Arial", Font.PLAIN, 16);
-        
+
         // define colors
         Color blue = Color.decode("#020122");
         Color orange = Color.decode("#FC9E4F");
         Color transparent = new Color(0, 0, 0, 0);
-        
+
         JPanel guessWordCard = new JPanel();
         guessWordCard.setBackground(Color.WHITE);
         guessWordCard.setLayout(new GridBagLayout());
         guessWordCard.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-        
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -1010,7 +1033,7 @@ class UserInterface {
         group1.add(heading1);
         group1.add(heading2);
         guessWordCard.add(group1, gbc);
-        
+
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -1027,7 +1050,7 @@ class UserInterface {
         group2.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         // get list of words
         ArrayList<Word> list = Dictionary.getCollectionOfRandSlangs();
-        Word ans = list.get((int)Math.floor(Math.random() * list.size()));
+        Word ans = list.get((int) Math.floor(Math.random() * list.size()));
         // display list of words
         JLabel word = new JLabel(ans.getName());
         word.setFont(p);
@@ -1036,7 +1059,7 @@ class UserInterface {
         JPanel group2_choices = new JPanel();
         group2_choices.setBackground(transparent);
         group2_choices.setLayout(new GridLayout(2, 2, 10, 10));
-        for(Word w: list) {
+        for (Word w : list) {
             JPanel wordCard = new JPanel();
             wordCard.setBackground(orange);
             JLabel wordDef = new JLabel(w.getDefinition());
@@ -1044,12 +1067,12 @@ class UserInterface {
             wordCard.add(wordDef);
             wordCard.addMouseListener(new MyMouseListener(wordCard));
             wordCard.addMouseListener(new MouseAdapter() {
-                @Override public void mouseClicked(MouseEvent e) {
-                    if(w.getDefinition().equals(ans.getDefinition())) {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (w.getDefinition().equals(ans.getDefinition())) {
                         JOptionPane.showMessageDialog(frame, "Congrats on choosing the correct answer!", "Notification", 0);
                         resetGuessSlangWords();
-                    }
-                    else {
+                    } else {
                         JOptionPane.showMessageDialog(frame, "Sorry, wrong answer :/", "Notification", 0);
                     }
                 }
@@ -1060,34 +1083,34 @@ class UserInterface {
         guessWordCard.add(group2, gbc);
         return guessWordCard;
     }
-    
+
     void resetGuessSlangWords() {
         this.mainCnt.remove(cards.get("guessSlangCard"));
         this.cards.put("guessSlangCard", this.generateGuessDefinition());
         this.mainCnt.add(cards.get("guessSlangCard"), "guessSlangCard");
-        CardLayout c = (CardLayout)this.mainCnt.getLayout();
+        CardLayout c = (CardLayout) this.mainCnt.getLayout();
         c.show(this.mainCnt, "guessSlangCard");
         this.mainCnt.revalidate();
         this.mainCnt.repaint();
     }
-    
+
     void initMainCnt() {
         // define fonts
         Font h1 = new Font("Arial", Font.BOLD, 42);
         Font h2 = new Font("Arial", Font.BOLD, 30);
         Font h3 = new Font("Arial", Font.BOLD, 20);
         Font p = new Font("Arial", Font.PLAIN, 16);
-        
+
         // define colors
         Color blue = Color.decode("#020122");
         Color orange = Color.decode("#FC9E4F");
         Color transparent = new Color(0, 0, 0, 0);
-        
+
         // container for card layout
         this.mainCnt = new JPanel();
         CardLayout cl = new CardLayout();
         this.mainCnt.setLayout(cl);
-        
+
         // creating cards
         this.cards = new HashMap<>();
         cards.put("searchCard", this.generateSearchCard());
@@ -1096,7 +1119,7 @@ class UserInterface {
         cards.put("dailySlangCard", this.generateDailySlangWords());
         cards.put("guessSlangCard", this.generateGuessSlangWords());
         cards.put("guessDefCard", this.generateGuessDefinition());
-        
+
         // adding cards
         this.mainCnt.add(cards.get("searchCard"), "searchCard");
         this.mainCnt.add(cards.get("historyCard"), "historyCard");
@@ -1104,10 +1127,10 @@ class UserInterface {
         this.mainCnt.add(cards.get("dailySlangCard"), "dailySlangCard");
         this.mainCnt.add(cards.get("guessSlangCard"), "guessSlangCard");
         this.mainCnt.add(cards.get("guessDefCard"), "guessDefCard");
-        
+
         cl.show(this.mainCnt, "searchCard");
     }
-    
+
     void display() {
         SwingUtilities.invokeLater(() -> {
             // initialize components
@@ -1127,11 +1150,12 @@ class UserInterface {
             this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             this.frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
             this.frame.setVisible(true);
-        });   
+        });
     }
 }
 
 public class Project1 {
+
     /**
      * @param args the command line arguments
      */
